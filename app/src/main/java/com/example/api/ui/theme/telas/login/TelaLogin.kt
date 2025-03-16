@@ -18,6 +18,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -79,21 +81,48 @@ fun Login(name: String, modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                TextField(
-                    modifier = Modifier
-                        .background(Color(0x33D9D9D9)),
-                    value = email,
-                    onValueChange = {},
-                    label = { Text("Email") }
-                )
+                Box {
+
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .padding(top = 8.dp) // adding some space to the label
+                            .background(Color(0x33D9D9D9))
+                    )
+
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = {},
+                        label = { Text("Email") },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFD9D9D9),
+                            unfocusedBorderColor = Color(0xFFD9D9D9)
+                        )
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(28.dp))
-                TextField(
-                    modifier = Modifier
-                        .background(Color(0x33D9D9D9)),
-                    value = senha,
-                    onValueChange = {},
-                    label = { Text("Senha") }
-                )
+
+                Box {
+
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .padding(top = 8.dp) // adding some space to the label
+                            .background(Color(0x33D9D9D9))
+                    )
+
+                    OutlinedTextField(
+                        value = senha,
+                        onValueChange = {},
+                        label = { Text("Senha") },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFD9D9D9),
+                            unfocusedBorderColor = Color(0xFFD9D9D9)
+                        )
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Box(modifier = Modifier
