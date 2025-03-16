@@ -21,8 +21,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -81,21 +84,49 @@ fun Cadastro(name: String, modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                TextField(
-                    modifier = Modifier
-                        .background(Color(0x33D9D9D9)),
-                    value = nome,
-                    onValueChange = {},
-                    label = { Text("Insira seu nome") }
-                )
+
+                Box {
+
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .padding(top = 8.dp) // adding some space to the label
+                            .background(Color(0x33D9D9D9))
+                    )
+
+                    OutlinedTextField(
+                        value = nome,
+                        onValueChange = {},
+                        label = { Text("Insira seu nome") },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFD9D9D9),
+                            unfocusedBorderColor = Color(0xFFD9D9D9)
+                        )
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(28.dp))
-                TextField(
-                    modifier = Modifier
-                        .background(Color(0x33D9D9D9)),
-                    value = telefone,
-                    onValueChange = {},
-                    label = { Text("(00) 91234-5678") }
-                )
+
+                Box {
+
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .padding(top = 8.dp) // adding some space to the label
+                            .background(Color(0x33D9D9D9))
+                    )
+
+                    OutlinedTextField(
+                        value = telefone,
+                        onValueChange = {},
+                        label = { Text("(00) 91234-5678") },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFD9D9D9),
+                            unfocusedBorderColor = Color(0xFFD9D9D9)
+                        )
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(31.dp))
 
                 Box(modifier = Modifier
