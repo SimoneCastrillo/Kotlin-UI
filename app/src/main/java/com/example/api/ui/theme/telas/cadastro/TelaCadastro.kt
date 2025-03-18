@@ -96,7 +96,7 @@ fun Cadastro(name: String, modifier: Modifier = Modifier) {
 
                     OutlinedTextField(
                         value = nome,
-                        onValueChange = {},
+                        onValueChange = { nome = it },
                         label = { Text("Insira seu nome") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
@@ -118,7 +118,7 @@ fun Cadastro(name: String, modifier: Modifier = Modifier) {
 
                     OutlinedTextField(
                         value = telefone,
-                        onValueChange = {},
+                        onValueChange = { telefone = it },
                         label = { Text("(00) 91234-5678") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),

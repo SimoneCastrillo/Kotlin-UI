@@ -114,7 +114,7 @@ fun RedefinirSenha1(name: String, modifier: Modifier = Modifier){
 
                     OutlinedTextField(
                         value = email,
-                        onValueChange = {},
+                        onValueChange = { email = it },
                         label = { Text("Email") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
