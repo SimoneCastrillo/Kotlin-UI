@@ -92,7 +92,7 @@ fun Cadastro2(name: String, modifier: Modifier = Modifier) {
 
                     OutlinedTextField(
                         value = email,
-                        onValueChange = {},
+                        onValueChange = { email = it },
                         label = { Text("Insira seu email") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
@@ -114,7 +114,7 @@ fun Cadastro2(name: String, modifier: Modifier = Modifier) {
 
                     OutlinedTextField(
                         value = emailConfirmacao,
-                        onValueChange = {},
+                        onValueChange = { emailConfirmacao = it },
                         label = { Text("Confirme seu email") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
@@ -136,7 +136,7 @@ fun Cadastro2(name: String, modifier: Modifier = Modifier) {
 
                     OutlinedTextField(
                         value = senha,
-                        onValueChange = {},
+                        onValueChange = { senha = it },
                         label = { Text("Insira sua senha") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
@@ -158,7 +158,7 @@ fun Cadastro2(name: String, modifier: Modifier = Modifier) {
 
                     OutlinedTextField(
                         value = senhaConfirmacao,
-                        onValueChange = {},
+                        onValueChange = { senhaConfirmacao = it },
                         label = { Text("Confirme sua senha") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),

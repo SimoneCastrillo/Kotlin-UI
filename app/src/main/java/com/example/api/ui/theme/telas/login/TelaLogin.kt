@@ -92,7 +92,7 @@ fun Login(name: String, modifier: Modifier = Modifier) {
 
                     OutlinedTextField(
                         value = email,
-                        onValueChange = {},
+                        onValueChange = {email = it},
                         label = { Text("Email") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
@@ -114,7 +114,7 @@ fun Login(name: String, modifier: Modifier = Modifier) {
 
                     OutlinedTextField(
                         value = senha,
-                        onValueChange = {},
+                        onValueChange = { senha = it },
                         label = { Text("Senha") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
