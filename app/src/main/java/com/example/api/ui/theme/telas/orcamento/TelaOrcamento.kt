@@ -27,7 +27,30 @@ import com.example.api.ui.theme.APITheme
 @Composable
 fun Orcamento(modifier: Modifier = Modifier) {
     Column {
-        Header()
+        Column(
+            modifier = Modifier
+                .width(412.dp)
+                .height(138.dp)
+                .background(color = Color(0xFFC54477), shape = RoundedCornerShape(0.dp))
+                .padding(start = 80.dp, top = 32.dp, end = 80.dp, bottom = 32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .width(92.dp)
+                    .height(36.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo_branco),
+                    contentDescription = "Descrição da Imagem",
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentScale = ContentScale.Fit
+                )
+            }
+        }
 
         Column(
             modifier = Modifier
@@ -186,22 +209,8 @@ fun Orcamento(modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-fun Header() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = Color(0xFFC54477), shape = RoundedCornerShape(0.dp))
-            .padding(vertical = 32.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.logo_branco),
-            contentDescription = "Logo",
-            modifier = Modifier.size(92.dp)
-        )
-    }
-}
+
+
 
 @Preview(showBackground = true)
 @Composable

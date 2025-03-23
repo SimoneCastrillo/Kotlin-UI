@@ -54,6 +54,7 @@ import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.telas.login.Login
 import com.example.api.ui.theme.telas.orcamento.Orcamento
 import com.example.api.ui.theme.telas.orcamento.Orcamento2Screen
+import com.example.api.ui.theme.telas.perfil.PerfilScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,6 +77,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     APITheme {
-        Orcamento2Screen()
+        PerfilScreen()
     }
 }
