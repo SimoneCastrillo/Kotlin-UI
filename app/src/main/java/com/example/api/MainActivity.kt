@@ -52,6 +52,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.telas.login.Login
+import com.example.api.ui.theme.telas.orcamento.Orcamento
+import com.example.api.ui.theme.telas.orcamento.Orcamento2Screen
+import com.example.api.ui.theme.telas.perfil.PerfilScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,5 +76,7 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GreetingPreview() {
-
+    APITheme {
+        PerfilScreen()
+    }
 }
