@@ -2,6 +2,7 @@ package com.example.api.ui.theme.telas.redefinicao_senha
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -39,11 +40,13 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
 
 @Composable
-fun RedefinirSenha2(name: String, modifier: Modifier = Modifier) {
+fun RedefinirSenha2(name: String, modifier: Modifier = Modifier, navController: NavController) {
     var email by remember { mutableStateOf("") }
 
     Column(modifier = modifier) {
@@ -99,7 +102,9 @@ fun RedefinirSenha2(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(46.dp))
 
                 Button(
-                    onClick = {},
+                    onClick = {
+                        navController.navigate("redefinir-senha-3")
+                    },
                     colors = ButtonDefaults.buttonColors(Color.Transparent),
                     modifier = Modifier
                         .width(245.dp)
@@ -134,7 +139,11 @@ fun RedefinirSenha2(name: String, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(85.dp))
 
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            navController.navigate("login")
+                        },
                     text = buildAnnotatedString {
                         append("Lembrou a senha? ")
                         withStyle(style = SpanStyle(color = Color(0xFFC54477))) { // Rosa para a palavra "Voltar"
@@ -194,7 +203,9 @@ fun EmailInputField(modifier: Modifier = Modifier, value: String, onValueChange:
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewRedefinirSenha2() {
+    val navController = rememberNavController()
+
     APITheme {
-        RedefinirSenha2("Android")
+        RedefinirSenha2("Android", navController = navController)
     }
 }

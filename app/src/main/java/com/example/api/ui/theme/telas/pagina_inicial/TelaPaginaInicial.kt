@@ -3,6 +3,7 @@ package com.example.api.ui.theme.telas.pagina_inicial
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,11 +34,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
 
 @Composable
-fun TelaPaginaIncial(name: String, modifier: Modifier = Modifier){
+fun TelaPaginaIncial(name: String, modifier: Modifier = Modifier, navController: NavController){
     Column(
         modifier = Modifier
             .width(412.dp)
@@ -101,7 +104,11 @@ fun TelaPaginaIncial(name: String, modifier: Modifier = Modifier){
                 .width(305.dp)
                 .height(35.dp)
                 .background(color = Color(0x33D9D9D9), shape = RoundedCornerShape(size = 8.dp))
-                .padding(start = 16.dp, top = 3.dp, end = 16.dp, bottom = 3.dp),
+                .padding(start = 16.dp, top = 3.dp, end = 16.dp, bottom = 3.dp)
+                .clickable {
+                    navController.navigate("visualizacao-evento")
+                }
+                ,
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -266,6 +273,9 @@ fun TelaPaginaIncial(name: String, modifier: Modifier = Modifier){
                     modifier = Modifier
                         .size(42.dp)
                         .clip(CircleShape)
+                        .clickable {
+                            navController.navigate("pagina-inicial")
+                        }
                         .border(1.dp, color = Color(0xFFC54477), shape = CircleShape)
                 ) {
                     Box(
@@ -329,7 +339,9 @@ fun TelaPaginaIncial(name: String, modifier: Modifier = Modifier){
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewTelaPaginaInicial(){
+    val navController = rememberNavController()
+
     APITheme {
-        TelaPaginaIncial("Android")
+        TelaPaginaIncial("Android", navController = navController)
     }
 }

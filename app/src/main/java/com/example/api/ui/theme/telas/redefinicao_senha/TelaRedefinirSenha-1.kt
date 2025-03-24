@@ -3,6 +3,7 @@ package com.example.api.ui.theme.telas.redefinicao_senha
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -33,20 +34,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.telas.cadastro.Cadastro
 
 @Composable
-fun RedefinirSenha1(name: String, modifier: Modifier = Modifier){
+fun RedefinirSenha1(name: String, modifier: Modifier = Modifier, navController: NavController){
     var email by remember { mutableStateOf("") }
 
     Column {
@@ -130,7 +136,9 @@ fun RedefinirSenha1(name: String, modifier: Modifier = Modifier){
                     .height(40.dp)
                 ){
                     Button(
-                        onClick = {},
+                        onClick = {
+                            navController.navigate("redefinir-senha-2")
+                        },
                         colors = ButtonDefaults.buttonColors(
                             Color.Transparent,
                         ),
@@ -160,8 +168,16 @@ fun RedefinirSenha1(name: String, modifier: Modifier = Modifier){
                 ){
                     Text(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        text = "Lembrou a senha? Voltar",
+                            .fillMaxWidth()
+                            .clickable {
+                                navController.navigate("login")
+                            },
+                        text = buildAnnotatedString {
+                            append("Lembrou a senha? ")
+                            withStyle(style = SpanStyle(color = Color(0xFFC54477))) { // Rosa para a palavra "Voltar"
+                                append("Voltar")
+                            }
+                        },
                         style = TextStyle(
                             fontSize = 11.sp,
                             fontWeight = FontWeight(400),
@@ -172,15 +188,15 @@ fun RedefinirSenha1(name: String, modifier: Modifier = Modifier){
                 }
             }
         }
-
     }
-
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewRedefinirSenha(){
+    val navController = rememberNavController()
+
     APITheme {
-        RedefinirSenha1("Android")
+        RedefinirSenha1("Android", navController = navController)
     }
 }

@@ -50,20 +50,56 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.api.ui.theme.APITheme
+import com.example.api.ui.theme.telas.cadastro.Cadastro
+import com.example.api.ui.theme.telas.cadastro.Cadastro2
 import com.example.api.ui.theme.telas.login.Login
+import com.example.api.ui.theme.telas.pagina_inicial.TelaPaginaIncial
+import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha1
+import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha2
+import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha3
+import com.example.api.ui.theme.telas.visualizacao_evento.TelaVisualizacaoEvento
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            APITheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Login(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            val navController = rememberNavController()
+
+            NavHost(navController = navController, startDestination = "login") {
+                composable("login") {
+                    Login("Android", navController = navController)
+                }
+
+                composable("cadastro-1") {
+                    Cadastro("Android", navController = navController)
+                }
+
+                composable("cadastro-2") {
+                    Cadastro2("Android", navController = navController)
+                }
+
+                composable("redefinir-senha-1") {
+                    RedefinirSenha1("Android", navController = navController)
+                }
+
+                composable("redefinir-senha-2") {
+                    RedefinirSenha2("Android", navController = navController)
+                }
+
+                composable("redefinir-senha-3") {
+                    RedefinirSenha3("Android", navController = navController)
+                }
+
+                composable("pagina-inicial") {
+                    TelaPaginaIncial("Android", navController = navController)
+                }
+
+                composable("visualizacao-evento") {
+                    TelaVisualizacaoEvento("Android", navController = navController)
                 }
             }
         }
