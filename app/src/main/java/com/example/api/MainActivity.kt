@@ -62,6 +62,10 @@ import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha1
 import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha2
 import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha3
 import com.example.api.ui.theme.telas.visualizacao_evento.TelaVisualizacaoEvento
+import com.example.api.ui.theme.telas.orcamento.Orcamento
+import com.example.api.ui.theme.telas.orcamento.Orcamento2Screen
+import com.example.api.ui.theme.telas.perfil.PerfilScreen
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,5 +113,7 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GreetingPreview() {
-
+    APITheme {
+        PerfilScreen()
+    }
 }
