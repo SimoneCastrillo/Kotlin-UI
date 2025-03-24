@@ -2,6 +2,7 @@ package com.example.api.ui.theme.telas.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -33,18 +35,23 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
 
 @Composable
-fun Login(name: String, modifier: Modifier = Modifier) {
+fun Login(name: String, modifier: Modifier = Modifier, navController: NavController) {
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
     var isChecked by remember { mutableStateOf(false) }
@@ -166,6 +173,10 @@ fun Login(name: String, modifier: Modifier = Modifier) {
                         }
 
                         Text(
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate("redefinir-senha-1")
+                                },
                             text = "Esqueci minha senha",
                             style = TextStyle(
                                 fontSize = 11.sp,
@@ -183,21 +194,23 @@ fun Login(name: String, modifier: Modifier = Modifier) {
 
                 Box(modifier = Modifier
                     .fillMaxWidth()
-                    .height(40.dp)
+                    .height(45.dp)
                 ){
                     Button(
-                        onClick = {},
+                        onClick = {
+                            navController.navigate("pagina-inicial")
+                        },
                         colors = ButtonDefaults.buttonColors(
                             Color.Transparent,
                         ),
                         modifier = Modifier
                             .width(412.dp)
-                            .height(40.dp)
+                            .height(45.dp)
                             .background(color = Color(0xFFC54477), shape = RoundedCornerShape(size = 16.dp))
                             .padding(start = 16.dp, top = 2.dp, end = 16.dp, bottom = 2.dp)
                     ){
                         Text(
-                            text = "LOGIN",
+                            text = "Login",
                             style = TextStyle(
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight(800),
@@ -217,8 +230,16 @@ fun Login(name: String, modifier: Modifier = Modifier) {
                 ){
                     Text(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        text = "Ainda não possui uma conta? Cadastre-se",
+                            .fillMaxWidth()
+                            .clickable {
+                                navController.navigate("cadastro-1")
+                            },
+                        text = buildAnnotatedString {
+                            append("Ainda não possui uma conta? ")
+                            withStyle(style = SpanStyle(color = Color(0xFFC54477))) {
+                                append("Cadastre-se")
+                            }
+                        },
                         style = TextStyle(
                             fontSize = 11.sp,
                             fontWeight = FontWeight(400),
@@ -235,7 +256,8 @@ fun Login(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GreetingPreview() {
+    val navController = rememberNavController();
     APITheme {
-        Login("Android")
+        Login("Android", navController = navController)
     }
 }

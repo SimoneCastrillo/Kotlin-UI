@@ -3,6 +3,7 @@ package com.example.api.ui.theme.telas.visualizacao_evento
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,12 +33,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha3
 
 @Composable
-fun TelaVisualizacaoEvento(name: String, modifier: Modifier = Modifier) {
+fun TelaVisualizacaoEvento(name: String, modifier: Modifier = Modifier, navController: NavController) {
 
     Column(
         modifier = Modifier
@@ -508,6 +511,9 @@ fun TelaVisualizacaoEvento(name: String, modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .size(42.dp)
                     .clip(CircleShape)
+                    .clickable {
+                        navController.navigate("pagina-inicial")
+                    }
                     .border(1.dp, color = Color(0xFFC54477), shape = CircleShape)
             ) {
                 Box(
@@ -571,7 +577,9 @@ fun TelaVisualizacaoEvento(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewRedefinirSenha3() {
+    val navController = rememberNavController()
+
     APITheme {
-        TelaVisualizacaoEvento("Android")
+        TelaVisualizacaoEvento("Android", navController = navController)
     }
 }

@@ -3,6 +3,7 @@ package com.example.api.ui.theme.telas.redefinicao_senha
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -39,12 +40,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.telas.cadastro.Cadastro
 
 @Composable
-fun RedefinirSenha3(name: String, modifier: Modifier = Modifier){
+fun RedefinirSenha3(name: String, modifier: Modifier = Modifier, navController: NavController){
     var email by remember { mutableStateOf("") }
 
     Column {
@@ -140,6 +143,9 @@ fun RedefinirSenha3(name: String, modifier: Modifier = Modifier){
                             .width(412.dp)
                             .height(40.dp)
                             .background(color = Color(0xFFC54477), shape = RoundedCornerShape(size = 16.dp))
+                            .clickable {
+                                navController.navigate("login")
+                            }
                     ){
                         Text(
                             text = "Salvar",
@@ -169,7 +175,9 @@ fun RedefinirSenha3(name: String, modifier: Modifier = Modifier){
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewRedefinirSenha3() {
+    val navController = rememberNavController()
+
     APITheme {
-        RedefinirSenha3("Android")
+        RedefinirSenha3("Android", navController = navController)
     }
 }
