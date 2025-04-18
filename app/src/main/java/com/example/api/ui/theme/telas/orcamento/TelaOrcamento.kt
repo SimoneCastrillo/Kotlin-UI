@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -21,25 +22,32 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
+import com.example.api.ui.theme.telas.login.Login
 
 @Composable
-fun Orcamento(modifier: Modifier = Modifier) {
+fun Orcamento(name: String, modifier: Modifier = Modifier, navController: NavController) {
+    // Obtendo configurações da tela
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+
     Column {
         Column(
             modifier = Modifier
-                .width(412.dp)
+                .fillMaxWidth() // Ajusta a largura para o máximo na tela
                 .height(138.dp)
                 .background(color = Color(0xFFC54477), shape = RoundedCornerShape(0.dp))
-                .padding(start = 80.dp, top = 32.dp, end = 80.dp, bottom = 32.dp),
+                .padding(start = 16.dp, top = 32.dp, end = 16.dp, bottom = 32.dp), // Use padding ao invés de alinhamento fixo
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
 
             Box(
                 modifier = Modifier
-                    .width(92.dp)
+                    .width((screenWidth * 0.25f)) // Ajuste baseado em porcentagem da largura da tela
                     .height(36.dp)
             ) {
                 Image(
@@ -209,13 +217,11 @@ fun Orcamento(modifier: Modifier = Modifier) {
     }
 }
 
-
-
-
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun OrcamentoPreview() {
+    val navController = rememberNavController();
     APITheme {
-        Orcamento()
+        Orcamento("Android", navController = navController)
     }
 }

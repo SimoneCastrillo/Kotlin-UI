@@ -16,13 +16,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.api.R
+import com.example.api.ui.theme.APITheme
 
 @Composable
-fun Orcamento2Screen() {
+fun Orcamento2Screen(name: String, modifier: Modifier = Modifier, navController: NavController) {
     var showDialog by remember { mutableStateOf(false) }
     var observacao by remember { mutableStateOf("") }
 
@@ -202,5 +206,13 @@ fun Orcamento2Screen() {
                 }
             }
         }
+    }
+}
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun OrcamentoPreview2() {
+    val navController = rememberNavController();
+    APITheme {
+        Orcamento2Screen("Android", navController = navController)
     }
 }
