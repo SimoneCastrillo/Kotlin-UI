@@ -22,19 +22,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.components.MenuIcones
+import com.example.api.ui.theme.telas.perfil.PerfilViewModel
 
 @Composable
 fun TelaPaginaInicial(name: String, modifier: Modifier = Modifier, navController: NavController) {
+    val viewModel: PaginaInicialViewModel = viewModel()
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
+    val id = viewModel.id.value
+    val token = viewModel.token.value
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Cabeçalho
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -135,11 +139,14 @@ fun TelaPaginaInicial(name: String, modifier: Modifier = Modifier, navController
 
             Spacer(modifier = Modifier.height(screenHeight * 0.1f))
 
-            MenuIcones(navController)
-
+            if (id != null && token != null) {
+                MenuIcones(navController = navController, id = id, token = token)
+            } else {
+                Text("Carregando informações do usuário...")
+            }
         }
     }
-    }
+}
 
 @Preview(showBackground = true)
 @Composable

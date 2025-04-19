@@ -18,7 +18,7 @@ import androidx.navigation.NavController
 import com.example.api.R
 
 @Composable
-fun MenuIcones(navController: NavController) {
+fun MenuIcones(navController: NavController, id: Int, token: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -33,8 +33,9 @@ fun MenuIcones(navController: NavController) {
         AddNewEventIcon(navController = navController)
 
         MenuIcon(iconRes = R.drawable.user, description = "Perfil") {
-            navController.navigate("tela-perfil")
+            navController.navigate("tela-perfil/$id/$token")
         }
+
     }
 }
 

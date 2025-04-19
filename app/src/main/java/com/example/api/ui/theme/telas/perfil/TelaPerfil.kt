@@ -14,25 +14,47 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.components.MenuIcones
 import com.example.api.ui.theme.telas.orcamento.Orcamento
 
 @Composable
-fun PerfilScreen(name: String, modifier: Modifier = Modifier, navController: NavController) {
-    var nome by remember { mutableStateOf("Evandra") }
-    var email by remember { mutableStateOf("evandra.nunes@gmail.com") }
-    var celular by remember { mutableStateOf("(11) 94002-8922") }
-    var quantidadeReservas by remember { mutableStateOf("3") }
+fun PerfilScreen(navController: NavController, id: Int, token: String) {
+    val viewModel: PerfilViewModel = viewModel()
+    val usuario = viewModel.usuario.collectAsState().value
+
+    LaunchedEffect(key1 = id) {
+        viewModel.carregarPerfil(id, token)
+    }
+
+    var nome by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var celular by remember { mutableStateOf("") }
+
+    LaunchedEffect(usuario) {
+        usuario?.let {
+            nome = it.nome
+            email = it.email
+            celular = it.telefone
+        }
+    }
+
+    val qtdOrcamentos = viewModel.usuario.value?.qtdOrcamento?.toString() ?: "0"
+    val quantidadeReservas by remember { mutableStateOf(viewModel.usuario.value?.qtdOrcamento?.toString() ?: "") }
+
+    val erroMsg by remember { mutableStateOf(viewModel.erroMsg) }
 
     BoxWithConstraints {
         val maxWidthSize = maxWidth
@@ -41,7 +63,6 @@ fun PerfilScreen(name: String, modifier: Modifier = Modifier, navController: Nav
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Cabeçalho
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -57,7 +78,8 @@ fun PerfilScreen(name: String, modifier: Modifier = Modifier, navController: Nav
                 )
             }
 
-            // Ícone de Perfil
+            val fotoUrl = usuario?.foto ?: R.drawable.avatar
+
             Box(
                 modifier = Modifier
                     .size(100.dp)
@@ -65,7 +87,7 @@ fun PerfilScreen(name: String, modifier: Modifier = Modifier, navController: Nav
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.avatar),
+                    painter = rememberAsyncImagePainter(fotoUrl),
                     contentDescription = "Perfil",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -78,7 +100,7 @@ fun PerfilScreen(name: String, modifier: Modifier = Modifier, navController: Nav
             OutlinedTextField(
                 value = nome,
                 onValueChange = { nome = it },
-                label = { Text("Nome") },
+                label = { Text(stringResource(R.string.nome)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
@@ -93,8 +115,8 @@ fun PerfilScreen(name: String, modifier: Modifier = Modifier, navController: Nav
             // Campo Email
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
-                label = { Text("Email") },
+                onValueChange = { email = it }, // Atualiza o email no ViewModel
+                label = { Text(stringResource(R.string.email)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
@@ -106,11 +128,10 @@ fun PerfilScreen(name: String, modifier: Modifier = Modifier, navController: Nav
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Campo Celular
             OutlinedTextField(
                 value = celular,
-                onValueChange = { celular = it },
-                label = { Text("Celular") },
+                onValueChange = { celular = it }, // Atualiza o celular no ViewModel
+                label = { Text(stringResource(R.string.celular)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
@@ -122,25 +143,34 @@ fun PerfilScreen(name: String, modifier: Modifier = Modifier, navController: Nav
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Campo Quantidade de Reservas
             OutlinedTextField(
-                value = quantidadeReservas,
-                onValueChange = { quantidadeReservas = it },
-                label = { Text("Quantidade de Reservas") },
+                value = qtdOrcamentos,
+                onValueChange = {},
+                label = { Text(stringResource(R.string.quantidade_orcamento)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFFC54477),
                     unfocusedBorderColor = Color.Gray
-                )
+                ),
+                readOnly = true // Torna o campo somente leitura
             )
+
+            erroMsg?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = it,
+                    color = Color.Red,
+                    style = TextStyle(fontSize = 14.sp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botão Salvar
             Button(
-                onClick = { /* Lógica para salvar */ },
+                onClick = {
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
@@ -155,19 +185,17 @@ fun PerfilScreen(name: String, modifier: Modifier = Modifier, navController: Nav
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            MenuIcones(navController)
-
-
-
+            MenuIcones(navController, id, token)
         }
     }
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TelaPerfil() {
     val navController = rememberNavController()
     APITheme {
-        PerfilScreen("Android", navController = navController)
+        PerfilScreen(navController = navController, id = 37, token = "")
     }
 }

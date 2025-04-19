@@ -53,9 +53,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
+import com.example.api.ui.theme.telas.pagina_inicial.PaginaInicialViewModel
 
 @Composable
 fun Login(name: String, modifier: Modifier = Modifier, navController: NavController) {
+    val viewModelTelaInicial: PaginaInicialViewModel = viewModel()
     val viewModel: LoginViewModel = viewModel()
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
@@ -67,7 +69,8 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
 
     LaunchedEffect(usuario) {
         if (usuario != null) {
-            navController.navigate("pagina-inicial") {
+            viewModelTelaInicial.setUsuarioLogado(usuario.id, usuario.token)
+            navController.navigate("tela-perfil/${usuario.id}/${usuario.token}") {
                 popUpTo("login") { inclusive = true } // remove login da stack
             }
         }
@@ -194,7 +197,7 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
                                     .scale(0.5f),
                                 checked = isChecked,
                                 onCheckedChange = { checked ->
-                                    isChecked = checked // Atualiza o estado quando o usuário marcar/desmarcar
+                                    isChecked = checked
                                 }
                             )
 
@@ -276,9 +279,9 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
                                 navController.navigate("cadastro-1")
                             },
                         text = buildAnnotatedString {
-                            append("Ainda não possui uma conta? ")
+                            append(stringResource(id = R.string.ainda_nao_possui_conta))
                             withStyle(style = SpanStyle(color = Color(0xFFC54477))) {
-                                append("Cadastre-se")
+                                append(stringResource(id = R.string.cadastre_se))
                             }
                         },
                         style = TextStyle(

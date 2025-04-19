@@ -112,8 +112,13 @@ class MainActivity : ComponentActivity() {
                     Orcamento2Screen("Android", navController = navController)
                 }
 
-                composable("tela-perfil"){
-                    PerfilScreen("Android", navController = navController)
+                composable("tela-perfil/{id}/{token}") { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+                    val token = backStackEntry.arguments?.getString("token")
+
+                    if (id != null && token != null) {
+                        PerfilScreen(id = id, token = token, navController = navController)
+                    }
                 }
 
                 composable("pagina-inicial"){
@@ -131,6 +136,6 @@ class MainActivity : ComponentActivity() {
 fun GreetingPreview() {
     val navController = rememberNavController();
     APITheme {
-        PerfilScreen("Android", navController = navController)
+        Cadastro("Android", navController = navController)
     }
 }
