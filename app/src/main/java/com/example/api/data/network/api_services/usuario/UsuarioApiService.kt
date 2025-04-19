@@ -1,4 +1,4 @@
-package com.example.api.data.network
+package com.example.api.data.network.api_services.usuario
 
 import com.example.api.data.model.login.LoginRequest
 import com.example.api.data.model.login.LoginResponse
@@ -9,7 +9,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-interface ApiService {
+interface UsuarioApiService {
     @POST("usuarios/login")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 

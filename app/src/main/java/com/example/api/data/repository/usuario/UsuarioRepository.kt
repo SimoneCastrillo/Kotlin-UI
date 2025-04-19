@@ -1,13 +1,13 @@
 package com.example.api.data.repository.usuario
 
 import com.example.api.data.model.login.LoginResponse
-import com.example.api.data.network.ApiClient.apiService
+import com.example.api.data.network.ApiClient.usuarioApiService
 import okio.IOException
 
 class UsuarioRepository {
     suspend fun buscarPerfil(id: Int, token: String): Result<LoginResponse> {
         return try {
-            val response = apiService.getUsuarioPorId(id, "Bearer $token")
+            val response = usuarioApiService.getUsuarioPorId(id, "Bearer $token")
             if (response.isSuccessful) {
                 response.body()?.let {
                     Result.success(it)

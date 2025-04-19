@@ -11,7 +11,7 @@ data class OrcamentoResponse(
     val saborBolo: String,
     val pratoPrincipal: String,
     val lucro: Double,
-    val faturamento: Double,
+    val faturamento: Double?,
     val despesa: Double,
     val sugestao: String?,
     val usuario: Usuario,
@@ -33,7 +33,7 @@ data class Usuario(
 
 data class Decoracao(
     val id: Int,
-    val tema: String
+    val nome: String
 )
 
 data class Buffet(

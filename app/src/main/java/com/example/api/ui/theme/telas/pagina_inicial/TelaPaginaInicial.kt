@@ -74,7 +74,7 @@ fun TelaPaginaInicial(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 100.dp, bottom = 80.dp, start = 16.dp, end = 16.dp), // espaço para o menu
+                .padding(top = 100.dp, bottom = 80.dp, start = 16.dp, end = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
@@ -111,7 +111,7 @@ fun TelaPaginaInicial(
                             .background(Color(0x33D9D9D9), shape = RoundedCornerShape(8.dp))
                             .padding(16.dp)
                             .clickable {
-                                navController.navigate("visualizacao-evento")
+                                navController.navigate("visualizacao-evento/${orcamento.id}/$token")
                             },
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically

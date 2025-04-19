@@ -100,8 +100,12 @@ class MainActivity : ComponentActivity() {
                     RedefinirSenha3("Android", navController = navController)
                 }
 
-                composable("visualizacao-evento") {
-                    TelaVisualizacaoEvento("Android", navController = navController)
+                composable("visualizacao-evento/{id}/{token}") { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+                    val token = backStackEntry.arguments?.getString("token")
+                    if (id != null && token != null) {
+                        TelaVisualizacaoEvento(id = id, token = token, navController = navController)
+                    }
                 }
 
                 composable("tela-orcamento"){

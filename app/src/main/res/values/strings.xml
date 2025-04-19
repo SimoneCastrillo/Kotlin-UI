@@ -16,5 +16,9 @@
     <string name="quantidade_orcamento">Quantidade de orçamentos.</string>
     <string name="nome">Nome.</string>
     <string name="celular">Celular.</string>
+    <string name="decoracao">Decoração.</string>
+    <string name="sabor_do_bolo">Sabor do bolo.</string>
+    <string name="quantidade_convidados">Quantidade de convidados.</string>
+    <string name="valor_total">Valor total.</string>
 
 </resources>

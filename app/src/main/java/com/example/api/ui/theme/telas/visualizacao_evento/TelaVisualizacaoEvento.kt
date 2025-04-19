@@ -19,20 +19,28 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.api.R
@@ -40,7 +48,16 @@ import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha3
 
 @Composable
-fun TelaVisualizacaoEvento(name: String, modifier: Modifier = Modifier, navController: NavController) {
+fun TelaVisualizacaoEvento(id: Int, token: String, modifier: Modifier = Modifier, navController: NavController) {
+    val viewModel: VisualizacaoEventoViewModel = viewModel()
+    val orcamento by viewModel.orcamento.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val erroMsg by viewModel.erroMsg.collectAsState()
+    var saborBolo = orcamento?.saborBolo ?: "Nenhuma"
+
+    LaunchedEffect(Unit) {
+        viewModel.carregarOrcamento(id, token)
+    }
 
     Column(
         modifier = Modifier
@@ -81,8 +98,25 @@ fun TelaVisualizacaoEvento(name: String, modifier: Modifier = Modifier, navContr
             verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            erroMsg?.let {
+                Text(
+                    text = it,
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight(700),
+                        color = Color(0xFF1E1E1E),
+                    )
+                )
+            }
+
             Text(
-                text = "Aniversário",
+                text = "${orcamento?.tipoEvento?.nome ?: "Nenhum"}",
                 style = TextStyle(
                     fontSize = 32.sp,
                     fontWeight = FontWeight(700),
@@ -91,7 +125,7 @@ fun TelaVisualizacaoEvento(name: String, modifier: Modifier = Modifier, navContr
             )
 
             Text(
-                text = "22/03/2025 às 18h00",
+                text = "${orcamento?.dataEvento ?: "Data evento"} às ${orcamento?.inicio ?: "Horário"}",
                 style = TextStyle(
                     fontSize = 12.sp,
                     fontWeight = FontWeight(700),
@@ -303,7 +337,7 @@ fun TelaVisualizacaoEvento(name: String, modifier: Modifier = Modifier, navContr
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "Infantil com Balões",
+                            text = "${orcamento?.decoracao?.nome ?: "Nenhuma"}",
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight(400),
@@ -347,6 +381,14 @@ fun TelaVisualizacaoEvento(name: String, modifier: Modifier = Modifier, navContr
                     )
                 )
 
+//                OutlinedTextField(
+//                    value = saborBolo,
+//                    onValueChange = { saborBolo = it },
+//                    modifier = Modifier
+//                        .border(1.dp, color = Color(0xFFD9D9D9), shape = RoundedCornerShape(size = 8.dp))
+//                        .background(color = Color(0x33D9D9D9), shape = RoundedCornerShape(size = 8.dp)),
+//                )
+
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(47.dp, Alignment.End),
                     verticalAlignment = Alignment.CenterVertically,
@@ -365,7 +407,7 @@ fun TelaVisualizacaoEvento(name: String, modifier: Modifier = Modifier, navContr
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "Floresta Negra",
+                            text = "${saborBolo}",
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight(400),
@@ -412,7 +454,7 @@ fun TelaVisualizacaoEvento(name: String, modifier: Modifier = Modifier, navContr
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "140",
+                            text = "${orcamento?.qtdConvidados ?: "Convidados"} ",
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight(400),
@@ -459,7 +501,7 @@ fun TelaVisualizacaoEvento(name: String, modifier: Modifier = Modifier, navContr
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "R$ 2.500,00",
+                            text = "R$ ${orcamento?.faturamento ?: "Valor em análise"}",
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight(400),
@@ -580,6 +622,6 @@ fun PreviewRedefinirSenha3() {
     val navController = rememberNavController()
 
     APITheme {
-        TelaVisualizacaoEvento("Android", navController = navController)
+        TelaVisualizacaoEvento(30, "", navController = navController)
     }
 }

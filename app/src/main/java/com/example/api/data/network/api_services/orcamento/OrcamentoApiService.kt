@@ -1,4 +1,4 @@
-package com.example.api.data.network
+package com.example.api.data.network.api_services.orcamento
 
 import com.example.api.data.model.orcamento.OrcamentoResponse
 import retrofit2.Response
@@ -12,4 +12,10 @@ interface OrcamentoApiService {
         @Path("id") id: Int,
         @Header("Authorization") token: String
     ): Response<List<OrcamentoResponse>>
+
+    @GET("orcamentos/{id}")
+    suspend fun getOrcamentoPorId(
+        @Path("id") id: Int,
+        @Header("Authorization") token: String
+    ): Response<OrcamentoResponse>
 }

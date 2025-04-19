@@ -1,5 +1,7 @@
 package com.example.api.data.network
 
+import com.example.api.data.network.api_services.orcamento.OrcamentoApiService
+import com.example.api.data.network.api_services.usuario.UsuarioApiService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -24,8 +26,8 @@ object ApiClient {
             .build()
     }
 
-    val apiService: ApiService by lazy {
-        retrofit.create(ApiService::class.java)
+    val usuarioApiService: UsuarioApiService by lazy {
+        retrofit.create(UsuarioApiService::class.java)
     }
 
     val orcamentoApiService: OrcamentoApiService by lazy {

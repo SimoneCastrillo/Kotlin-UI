@@ -2,13 +2,13 @@ package com.example.api.data.repository.usuario
 
 import com.example.api.data.model.login.LoginRequest
 import com.example.api.data.model.login.LoginResponse
-import com.example.api.data.network.ApiClient.apiService
+import com.example.api.data.network.ApiClient.usuarioApiService
 import okio.IOException
 
 class AuthRepository {
     suspend fun login(email: String, senha: String): Result<LoginResponse> {
         return try {
-            val response = apiService.login(LoginRequest(email, senha))
+            val response = usuarioApiService.login(LoginRequest(email, senha))
 
             if (response.isSuccessful) {
                 val body = response.body()
