@@ -69,9 +69,11 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
 
     LaunchedEffect(usuario) {
         if (usuario != null) {
-            viewModelTelaInicial.setUsuarioLogado(usuario.id, usuario.token)
-            navController.navigate("tela-perfil/${usuario.id}/${usuario.token}") {
-                popUpTo("login") { inclusive = true } // remove login da stack
+            val id = usuario.id
+            val token = usuario.token
+
+            navController.navigate("pagina-inicial/$id/$token") {
+                popUpTo("login") { inclusive = true }
             }
         }
     }

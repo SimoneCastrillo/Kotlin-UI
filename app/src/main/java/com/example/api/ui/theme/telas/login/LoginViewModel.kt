@@ -1,14 +1,12 @@
 package com.example.api.ui.theme.telas.login
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.api.R
-import com.example.api.data.model.LoginResponse
-import com.example.api.data.repository.AuthRepository
+import com.example.api.data.model.login.LoginResponse
+import com.example.api.data.repository.usuario.AuthRepository
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {

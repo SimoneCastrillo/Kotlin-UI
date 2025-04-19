@@ -1,6 +1,6 @@
-package com.example.api.data.repository
+package com.example.api.data.repository.usuario
 
-import com.example.api.data.model.LoginResponse
+import com.example.api.data.model.login.LoginResponse
 import com.example.api.data.network.ApiClient.apiService
 import okio.IOException
 

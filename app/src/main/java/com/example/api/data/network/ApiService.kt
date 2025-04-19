@@ -1,7 +1,7 @@
 package com.example.api.data.network
 
-import com.example.api.data.model.LoginRequest
-import com.example.api.data.model.LoginResponse
+import com.example.api.data.model.login.LoginRequest
+import com.example.api.data.model.login.LoginResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

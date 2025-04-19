@@ -27,7 +27,7 @@ fun MenuIcones(navController: NavController, id: Int, token: String) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         MenuIcon(iconRes = R.drawable.notificacao, description = "Notificações") {
-            navController.navigate("pagina-inicial")
+            navController.navigate("pagina-inicial/$id/$token")
         }
 
         AddNewEventIcon(navController = navController)

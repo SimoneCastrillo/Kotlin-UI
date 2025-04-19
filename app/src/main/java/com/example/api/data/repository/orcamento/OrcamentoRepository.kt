@@ -1,0 +1,25 @@
+package com.example.api.data.repository.orcamento
+
+import com.example.api.data.model.orcamento.OrcamentoResponse
+import com.example.api.data.network.OrcamentoApiService
+import okio.IOException
+
+class OrcamentoRepository(private val apiService: OrcamentoApiService) {
+
+    suspend fun buscarOrcamentos(id: Int, token: String): Result<List<OrcamentoResponse>> {
+        return try {
+            val response = apiService.getOrcamentosPorUsuario(id, "Bearer $token")
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    Result.success(it)
+                } ?: Result.failure(Exception("dados_invalidos"))
+            } else {
+                Result.failure(Exception("acesso_negado"))
+            }
+        } catch (e: IOException) {
+            Result.failure(Exception("network_error"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+}

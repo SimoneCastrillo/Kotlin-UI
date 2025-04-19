@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.api.data.model.LoginResponse
-import com.example.api.data.repository.UsuarioRepository
+import com.example.api.data.model.login.LoginResponse
+import com.example.api.data.repository.usuario.UsuarioRepository
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -5,19 +5,31 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+
+
 object ApiClient {
     private const val BASE_URL = "http://192.168.1.8:8080/"
 
-    val apiService: ApiService by lazy {
+    private val clienteHttp: OkHttpClient by lazy {
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val clienteHttp = OkHttpClient.Builder().addInterceptor(interceptor).build()
+        OkHttpClient.Builder().addInterceptor(interceptor).build()
+    }
 
+    private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(clienteHttp)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiService::class.java)
+    }
+
+    val apiService: ApiService by lazy {
+        retrofit.create(ApiService::class.java)
+    }
+
+    val orcamentoApiService: OrcamentoApiService by lazy {
+        retrofit.create(OrcamentoApiService::class.java)
     }
 }
+

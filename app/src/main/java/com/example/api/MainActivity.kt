@@ -121,8 +121,13 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                composable("pagina-inicial"){
-                    TelaPaginaInicial("Android", navController = navController)
+                composable("pagina-inicial/{id}/{token}") { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+                    val token = backStackEntry.arguments?.getString("token")
+
+                    if (id != null && token != null) {
+                        TelaPaginaInicial(id = id, token = token, navController = navController)
+                    }
                 }
 
 
