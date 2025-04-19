@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
 
-            NavHost(navController = navController, startDestination = "login") {
+            NavHost(navController = navController, startDestination = "cadastro-1") {
                 composable("login") {
                     Login("Android", navController = navController)
                 }

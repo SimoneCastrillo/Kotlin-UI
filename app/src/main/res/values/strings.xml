@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">API</string>
+    <string name="erro_login_invalido">Email ou senha inválidos</string>
+    <string name="erro_rede">Erro de conexão. Tente novamente.</string>
+    <string name="email">Email</string>
+    <string name="senha">Senha</string>
+    <string name="login">Login</string>
+    <string name="salvar_acesso">Salvar acesso</string>
+    <string name="esqueci_senha">Esqueci minha senha</string>
+    <string name="erro_credenciais">Email ou senha inválidos</string>
+    <string name="erro_desconhecido">Erro desconhecido</string>
+    <string name="ainda_nao_possui_conta">Ainda não possui uma conta? </string>
+    <string name="cadastre_se">Cadastre-se</string>
+
 </resources>
