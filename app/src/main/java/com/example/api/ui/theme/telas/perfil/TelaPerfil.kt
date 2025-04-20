@@ -1,8 +1,15 @@
 package com.example.api.ui.theme.telas.perfil
 
+import android.content.Context
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,7 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -26,35 +35,62 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.api.R
+import com.example.api.data.model.usuario.UsuarioUpdateRequest
 import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.components.MenuIcones
 import com.example.api.ui.theme.telas.orcamento.Orcamento
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import kotlin.io.encoding.Base64
+
+fun uriToMultipart(uri: Uri, context: Context): MultipartBody.Part? {
+    val contentResolver = context.contentResolver
+    val inputStream = contentResolver.openInputStream(uri) ?: return null
+    val bytes = inputStream.readBytes()
+    val requestFile = bytes.toRequestBody("image/*".toMediaTypeOrNull())
+    return MultipartBody.Part.createFormData("foto", "foto.jpg", requestFile)
+}
 
 @Composable
 fun PerfilScreen(navController: NavController, id: Int, token: String) {
     val viewModel: PerfilViewModel = viewModel()
-    val usuario = viewModel.usuario.collectAsState().value
+    val usuario by viewModel.usuario.collectAsState()
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    var nome by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var celular by remember { mutableStateOf("") }
+    var fotoPreviewUri by remember { mutableStateOf<Uri?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            fotoPreviewUri = it
+        }
+    }
 
     LaunchedEffect(key1 = id) {
         viewModel.carregarPerfil(id, token)
     }
 
-    var nome by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var celular by remember { mutableStateOf("") }
-
     LaunchedEffect(usuario) {
-        usuario?.let {
-            nome = it.nome
-            email = it.email
-            celular = it.telefone
+        val user = usuario
+        if (user != null) {
+            nome = user.nome
+            email = user.email
+            celular = user.telefone
+            fotoPreviewUri = user.foto?.let { uri -> Uri.parse(uri) }
         }
     }
 
-    val qtdOrcamentos = viewModel.usuario.value?.qtdOrcamento?.toString() ?: "0"
-    val quantidadeReservas by remember { mutableStateOf(viewModel.usuario.value?.qtdOrcamento?.toString() ?: "") }
+    val qtdOrcamentos = usuario?.qtdOrcamento?.toString() ?: "0"
 
-    val erroMsg by remember { mutableStateOf(viewModel.erroMsg) }
+    val erroMsg = viewModel.erroMsg
+    val sucessoMsg = viewModel.sucessoMsg
 
     BoxWithConstraints {
         val maxWidthSize = maxWidth
@@ -63,6 +99,7 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Topo rosa com logo
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -78,25 +115,41 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
                 )
             }
 
-            val fotoUrl = usuario?.foto ?: R.drawable.avatar
-
             Box(
                 modifier = Modifier
                     .size(100.dp)
-                    .border(2.dp, Color.White, shape = CircleShape),
+                    .border(2.dp, Color.White, shape = CircleShape)
+                    .clickable { launcher.launch("image/*") },
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = rememberAsyncImagePainter(fotoUrl),
-                    contentDescription = "Perfil",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
+                val fotoUrl = usuario?.foto ?: "avatar_default"
+                val base64Image = usuario?.foto ?: ""
+                val imageBytes = android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT)
+
+                val imageBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+
+                if (fotoUrl != "avatar_default") {
+                    Image(
+                        bitmap = imageBitmap.asImageBitmap(),
+                        contentDescription = "Foto de Perfil",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape) // Garante que a imagem seja cortada no formato circular
+                            .border(2.dp, Color.White, shape = CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.avatar), // Substitua pelo ID correto do avatar padrão
+                        contentDescription = "Avatar Padrão",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo Nome
             OutlinedTextField(
                 value = nome,
                 onValueChange = { nome = it },
@@ -112,10 +165,9 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Campo Email
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it }, // Atualiza o email no ViewModel
+                onValueChange = { email = it },
                 label = { Text(stringResource(R.string.email)) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -130,7 +182,7 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
 
             OutlinedTextField(
                 value = celular,
-                onValueChange = { celular = it }, // Atualiza o celular no ViewModel
+                onValueChange = { celular = it },
                 label = { Text(stringResource(R.string.celular)) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -154,9 +206,10 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
                     focusedBorderColor = Color(0xFFC54477),
                     unfocusedBorderColor = Color.Gray
                 ),
-                readOnly = true // Torna o campo somente leitura
+                readOnly = true
             )
 
+            // Mensagens
             erroMsg?.let {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -166,10 +219,33 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
                 )
             }
 
+            sucessoMsg?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = it,
+                    color = Color(0xFF2E7D32),
+                    style = TextStyle(fontSize = 14.sp)
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 onClick = {
+                    coroutineScope.launch {
+                        val fotoPart = fotoPreviewUri?.let { uriToMultipart(it, context) }
+
+                        val request = UsuarioUpdateRequest(
+                            nome = nome,
+                            email = email,
+                            telefone = celular,
+                            foto = null  // Vamos ignorar a foto aqui, já que estamos passando via Multipart
+                        )
+
+                        Log.d("Base64", "Foto Base64: ${request.foto}")
+
+                        viewModel.salvarPerfil(id, request, token, fotoPart)
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -189,6 +265,7 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
         }
     }
 }
+
 
 
 @Preview(showBackground = true, showSystemUi = true)
