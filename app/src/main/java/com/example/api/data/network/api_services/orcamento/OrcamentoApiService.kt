@@ -1,6 +1,6 @@
 package com.example.api.data.network.api_services.orcamento
 
-import com.example.api.data.model.orcamento.OrcamentoResponse
+import com.example.api.data.model.response.orcamento.OrcamentoResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header

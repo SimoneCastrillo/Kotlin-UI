@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,15 +21,16 @@ fun TopoLogo() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(240.dp)
-            .background(Color(0xFFC54477)),
-        contentAlignment = Alignment.Center
+            .background(Color(0xFFC54477))
+            .padding(vertical = 64.dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo_branco),
             contentDescription = "Logo",
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.fillMaxWidth(0.6f)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp),
+            contentScale = ContentScale.Fit
         )
     }
 }

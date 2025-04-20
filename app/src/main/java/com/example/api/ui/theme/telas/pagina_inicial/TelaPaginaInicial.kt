@@ -117,7 +117,7 @@ fun TelaPaginaInicial(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            val imageRes = if (orcamento.cancelado == true) R.drawable.cancelado else R.drawable.pendente
+                            val imageRes = if (orcamento.cancelado) R.drawable.cancelado else R.drawable.pendente
                             Image(
                                 painter = painterResource(id = imageRes),
                                 contentDescription = null,

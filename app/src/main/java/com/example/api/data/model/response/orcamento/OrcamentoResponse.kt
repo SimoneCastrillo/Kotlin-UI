@@ -1,4 +1,4 @@
-package com.example.api.data.model.orcamento
+package com.example.api.data.model.response.orcamento
 
 data class OrcamentoResponse(
     val id: Int,

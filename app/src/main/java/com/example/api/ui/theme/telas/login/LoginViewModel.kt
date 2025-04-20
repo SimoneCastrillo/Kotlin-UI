@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.api.data.model.login.LoginResponse
+import com.example.api.data.model.response.login.LoginResponse
 import com.example.api.data.repository.usuario.AuthRepository
 import kotlinx.coroutines.launch
 

@@ -1,4 +1,4 @@
-package com.example.api.data.model.usuario
+package com.example.api.data.model.request.usuario
 
 data class UsuarioUpdateRequest(
     val nome: String,

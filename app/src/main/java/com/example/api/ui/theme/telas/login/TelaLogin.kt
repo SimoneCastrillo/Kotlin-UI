@@ -53,6 +53,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
+import com.example.api.ui.theme.components.TopoLogo
 import com.example.api.ui.theme.telas.pagina_inicial.PaginaInicialViewModel
 
 @Composable
@@ -79,6 +80,7 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
     }
 
     Column {
+        TopoLogo()
 //        BoxWithConstraints(
 //            modifier = Modifier
 //                .width(412.dp)
@@ -108,6 +110,7 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+
             ) {
                 Box {
 
@@ -267,7 +270,7 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
                     }
                 }
 
-                Spacer(modifier = Modifier.height(122.dp))
+                Spacer(modifier = Modifier.weight(1f))
 
                 Box(
                     modifier = Modifier
@@ -278,7 +281,7 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                navController.navigate("cadastro-1")
+                                navController.navigate("cadastro")
                             },
                         text = buildAnnotatedString {
                             append(stringResource(id = R.string.ainda_nao_possui_conta))

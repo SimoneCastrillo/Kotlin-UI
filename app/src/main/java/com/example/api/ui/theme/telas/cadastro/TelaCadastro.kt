@@ -1,5 +1,6 @@
 package com.example.api.ui.theme.telas.cadastro
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,6 +32,7 @@ import com.example.api.ui.theme.components.TelaComTextoLogin
 fun Cadastro(name: String, modifier: Modifier = Modifier, navController: NavController) {
     var nome by remember { mutableStateOf("") }
     var telefone by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -92,6 +94,15 @@ fun Cadastro(name: String, modifier: Modifier = Modifier, navController: NavCont
                     )
                 )
 
+                if (errorMessage.isNotEmpty()) {
+                    Text(
+                        text = errorMessage,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Row(
@@ -130,7 +141,16 @@ fun Cadastro(name: String, modifier: Modifier = Modifier, navController: NavCont
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Button(
-                    onClick = { navController.navigate("cadastro-2") },
+                    onClick = {
+                        if (nome.isBlank() || telefone.isBlank()) {
+                            errorMessage = "Por favor, preencha todos os campos."
+                        } else {
+                            errorMessage = ""
+                            val encodedNome = Uri.encode(nome)
+                            val encodedTelefone = Uri.encode(telefone)
+                            navController.navigate("cadastro-2/$encodedNome/$encodedTelefone")
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC54477)),
                     modifier = Modifier
                         .fillMaxWidth()

@@ -1,6 +1,6 @@
 package com.example.api.data.repository.orcamento
 
-import com.example.api.data.model.orcamento.OrcamentoResponse
+import com.example.api.data.model.response.orcamento.OrcamentoResponse
 import com.example.api.data.network.api_services.orcamento.OrcamentoApiService
 import okio.IOException
 

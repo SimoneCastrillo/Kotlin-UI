@@ -1,4 +1,4 @@
-package com.example.api.data.model.login
+package com.example.api.data.model.response.login
 
 data class LoginResponse(
     val id: Int,

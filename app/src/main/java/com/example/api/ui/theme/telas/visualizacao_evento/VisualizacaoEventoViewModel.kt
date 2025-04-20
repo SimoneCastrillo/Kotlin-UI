@@ -2,7 +2,7 @@ package com.example.api.ui.theme.telas.visualizacao_evento
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.api.data.model.orcamento.OrcamentoResponse
+import com.example.api.data.model.response.orcamento.OrcamentoResponse
 import com.example.api.data.network.ApiClient
 import com.example.api.data.repository.orcamento.OrcamentoRepository
 import kotlinx.coroutines.flow.MutableStateFlow

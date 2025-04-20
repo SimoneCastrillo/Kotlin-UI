@@ -50,9 +50,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.telas.cadastro.Cadastro
 import com.example.api.ui.theme.telas.cadastro.Cadastro2
@@ -75,17 +77,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
 
-            NavHost(navController = navController, startDestination = "cadastro-1") {
+            NavHost(navController = navController, startDestination = "login") {
                 composable("login") {
                     Login("Android", navController = navController)
                 }
 
-                composable("cadastro-1") {
-                    Cadastro("Android", navController = navController)
+                composable("cadastro") {
+                    Cadastro(name = "Android", navController = navController)
                 }
 
-                composable("cadastro-2") {
-                    Cadastro2("Android", navController = navController)
+                composable("cadastro-2/{nome}/{telefone}") { backStackEntry ->
+                    Cadastro2("name", navController = navController, backStackEntry = backStackEntry)
                 }
 
                 composable("redefinir-senha-1") {

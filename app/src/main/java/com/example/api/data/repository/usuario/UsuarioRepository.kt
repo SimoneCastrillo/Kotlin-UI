@@ -1,12 +1,11 @@
 package com.example.api.data.repository.usuario
 
-import android.content.Context
-import android.net.Uri
-import com.example.api.data.model.login.LoginResponse
-import com.example.api.data.model.usuario.UsuarioUpdateRequest
+import com.example.api.data.model.request.usuario.UsuarioCadastroRequest
+import com.example.api.data.model.response.login.LoginResponse
+import com.example.api.data.model.request.usuario.UsuarioUpdateRequest
+import com.example.api.data.model.response.usuario.UsuarioCadastroResponse
 import com.example.api.data.network.ApiClient.usuarioApiService
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okio.IOException
@@ -43,6 +42,24 @@ class UsuarioRepository {
             foto = fotoPart,  // Passa foto como Multipart
             token = "Bearer $token"
         )
+    }
+
+    suspend fun cadastrarUsuario(usuario: UsuarioCadastroRequest): Result<UsuarioCadastroResponse> {
+        return try {
+            val response = usuarioApiService.cadastrarUsuario(usuario)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    Result.success(body)
+                } else {
+                    Result.failure(Exception("Resposta vazia"))
+                }
+            } else {
+                Result.failure(Exception("Erro ao cadastrar: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
 }

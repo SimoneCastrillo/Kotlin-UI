@@ -1,21 +1,18 @@
 package com.example.api.data.network.api_services.usuario
 
-import com.example.api.data.model.login.LoginRequest
-import com.example.api.data.model.login.LoginResponse
-import com.example.api.data.model.usuario.UsuarioUpdateRequest
+import com.example.api.data.model.request.login.LoginRequest
+import com.example.api.data.model.request.usuario.UsuarioCadastroRequest
+import com.example.api.data.model.response.login.LoginResponse
+import com.example.api.data.model.response.usuario.UsuarioCadastroResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.Headers
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 
@@ -39,4 +36,9 @@ interface UsuarioApiService {
         @Part foto: MultipartBody.Part?,
         @Header("Authorization") token: String
     )
+
+    @POST("usuarios")
+    suspend fun cadastrarUsuario(
+        @Body usuario: UsuarioCadastroRequest
+    ): Response<UsuarioCadastroResponse>
 }
