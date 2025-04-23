@@ -40,9 +40,9 @@ class OrcamentoRepository() {
         }
     }
 
-    suspend fun cadastrarOrcamento(request: OrcamentoRequest): Result<OrcamentoResponse> {
+    suspend fun cadastrarOrcamento(request: OrcamentoRequest, token: String): Result<OrcamentoResponse> {
         return try {
-            val response = orcamentoApiService.cadastrarOrcamento(request)
+            val response = orcamentoApiService.cadastrarOrcamento(request, "Bearer $token")
             if (response.isSuccessful) {
                 response.body()?.let {
                     Result.success(it)

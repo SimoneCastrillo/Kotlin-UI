@@ -23,5 +23,8 @@ interface OrcamentoApiService {
     ): Response<OrcamentoResponse>
 
     @POST("orcamentos")
-    suspend fun cadastrarOrcamento(@Body orcamento: OrcamentoRequest): Response<OrcamentoResponse>
+    suspend fun cadastrarOrcamento(
+        @Body orcamento: OrcamentoRequest,
+        @Header("Authorization") token: String
+    ): Response<OrcamentoResponse>
 }

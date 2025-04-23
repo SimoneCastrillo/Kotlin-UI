@@ -73,12 +73,13 @@ class Orcamento2ViewModel() : ViewModel() {
             erroMsg = null
             sucessoMsg = null
 
-            val result = orcamentoRepository.cadastrarOrcamento(request)
+            val token = SessaoUsuario.token!!
+            Log.e("TokenVer", token)
+            val result = orcamentoRepository.cadastrarOrcamento(request, token)
 
             result.onSuccess { response ->
                 sucessoMsg = "Orçamento criado com sucesso!"
                 val id = response.id
-                val token = SessaoUsuario.token
                 navController.navigate("visualizacao-evento/$id/$token")
             }.onFailure {
                 erroMsg = it.message
