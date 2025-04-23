@@ -1,14 +1,16 @@
 package com.example.api.data.repository.orcamento
 
+import com.example.api.data.model.request.orcamento.OrcamentoRequest
 import com.example.api.data.model.response.orcamento.OrcamentoResponse
+import com.example.api.data.network.ApiClient.orcamentoApiService
 import com.example.api.data.network.api_services.orcamento.OrcamentoApiService
 import okio.IOException
 
-class OrcamentoRepository(private val apiService: OrcamentoApiService) {
+class OrcamentoRepository() {
 
     suspend fun buscarOrcamentos(id: Int, token: String): Result<List<OrcamentoResponse>> {
         return try {
-            val response = apiService.getOrcamentosPorUsuario(id, "Bearer $token")
+            val response = orcamentoApiService.getOrcamentosPorUsuario(id, "Bearer $token")
             if (response.isSuccessful) {
                 response.body()?.let {
                     Result.success(it)
@@ -25,7 +27,7 @@ class OrcamentoRepository(private val apiService: OrcamentoApiService) {
 
     suspend fun getOrcamento(id: Int, token: String): Result<OrcamentoResponse> {
         return try {
-            val response = apiService.getOrcamentoPorId(id, "Bearer $token")
+            val response = orcamentoApiService.getOrcamentoPorId(id, "Bearer $token")
             if (response.isSuccessful) {
                 response.body()?.let {
                     Result.success(it)
@@ -37,4 +39,20 @@ class OrcamentoRepository(private val apiService: OrcamentoApiService) {
             Result.failure(e)
         }
     }
+
+    suspend fun cadastrarOrcamento(request: OrcamentoRequest): Result<OrcamentoResponse> {
+        return try {
+            val response = orcamentoApiService.cadastrarOrcamento(request)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    Result.success(it)
+                } ?: Result.failure(Exception("Resposta vazia"))
+            } else {
+                Result.failure(Exception("Erro ao cadastrar: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 }

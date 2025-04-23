@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class PaginaInicialViewModel(
-    private val repository: OrcamentoRepository = OrcamentoRepository(ApiClient.orcamentoApiService)
+    private val repository: OrcamentoRepository = OrcamentoRepository()
 ) : ViewModel() {
 
     private val _orcamentos = MutableStateFlow<List<OrcamentoResponse>>(emptyList())

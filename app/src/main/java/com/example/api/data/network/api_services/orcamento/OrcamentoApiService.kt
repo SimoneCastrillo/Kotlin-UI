@@ -1,9 +1,12 @@
 package com.example.api.data.network.api_services.orcamento
 
+import com.example.api.data.model.request.orcamento.OrcamentoRequest
 import com.example.api.data.model.response.orcamento.OrcamentoResponse
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface OrcamentoApiService {
@@ -18,4 +21,7 @@ interface OrcamentoApiService {
         @Path("id") id: Int,
         @Header("Authorization") token: String
     ): Response<OrcamentoResponse>
+
+    @POST("orcamentos")
+    suspend fun cadastrarOrcamento(@Body orcamento: OrcamentoRequest): Response<OrcamentoResponse>
 }

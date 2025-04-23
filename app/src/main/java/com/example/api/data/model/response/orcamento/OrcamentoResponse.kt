@@ -8,11 +8,11 @@ data class OrcamentoResponse(
     val cancelado: Boolean,
     val inicio: String,
     val fim: String,
-    val saborBolo: String,
-    val pratoPrincipal: String,
-    val lucro: Double,
+    val saborBolo: String?,
+    val pratoPrincipal: String?,
+    val lucro: Double?,
     val faturamento: Double?,
-    val despesa: Double,
+    val despesa: Double?,
     val sugestao: String?,
     val usuario: Usuario,
     val tipoEvento: TipoEvento,
@@ -28,12 +28,15 @@ data class TipoEvento(
 
 data class Usuario(
     val id: Int,
-    val nome: String
+    val nome: String,
+    val email: String,
+    val telefone: String
 )
 
 data class Decoracao(
     val id: Int,
-    val nome: String
+    val nome: String,
+    val foto: String
 )
 
 data class Buffet(

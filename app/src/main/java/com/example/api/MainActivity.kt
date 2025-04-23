@@ -59,13 +59,15 @@ import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.telas.cadastro.Cadastro
 import com.example.api.ui.theme.telas.cadastro.Cadastro2
 import com.example.api.ui.theme.telas.login.Login
+import com.example.api.ui.theme.telas.orcamento.Orcamento
 import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha1
 import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha2
 import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha3
 import com.example.api.ui.theme.telas.visualizacao_evento.TelaVisualizacaoEvento
-import com.example.api.ui.theme.telas.orcamento.Orcamento
 import com.example.api.ui.theme.telas.orcamento.Orcamento2Screen
+import com.example.api.ui.theme.telas.orcamento.Orcamento2ViewModel
 import com.example.api.ui.theme.telas.orcamento.OrcamentoPreview2
+import com.example.api.ui.theme.telas.orcamento.OrcamentoViewModel
 import com.example.api.ui.theme.telas.pagina_inicial.TelaPaginaInicial
 import com.example.api.ui.theme.telas.perfil.PerfilScreen
 import com.example.api.ui.theme.telas.perfil.TelaPerfil
@@ -111,11 +113,23 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable("tela-orcamento"){
-                    Orcamento("Android", navController = navController)
+                    Orcamento(navController = navController)
                 }
 
-                composable("tela-orcamento2"){
-                    Orcamento2Screen("Android", navController = navController)
+                composable(
+                    "tela-orcamento2/{tipoEventoId}/{data}/{horario}/{quantidade}",
+                    arguments = listOf(
+                        navArgument("tipoEventoId") { type = NavType.IntType },
+                        navArgument("data") { type = NavType.StringType },
+                        navArgument("horario") { type = NavType.StringType },
+                        navArgument("quantidade") { type = NavType.StringType }
+                    )
+                ) { backStackEntry ->
+                    Orcamento2Screen(
+                        navController = navController,
+                        backStackEntry = backStackEntry,
+//                        viewModelTela2 = Orcamento2ViewModel()
+                    )
                 }
 
                 composable("tela-perfil/{id}/{token}") { backStackEntry ->

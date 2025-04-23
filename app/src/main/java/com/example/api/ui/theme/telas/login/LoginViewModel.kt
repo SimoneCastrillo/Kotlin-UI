@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.api.data.model.response.login.LoginResponse
 import com.example.api.data.repository.usuario.AuthRepository
+import com.example.api.data.session.SessaoUsuario
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
@@ -34,6 +35,8 @@ class LoginViewModel : ViewModel() {
 
             result.onSuccess {
                 usuarioLogado = it
+                SessaoUsuario.usuarioId = it.id
+                SessaoUsuario.token = it.token
             }.onFailure {
                 erroMsg = it.message
             }

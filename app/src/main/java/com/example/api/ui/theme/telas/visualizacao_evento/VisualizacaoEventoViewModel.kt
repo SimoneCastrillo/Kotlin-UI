@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class VisualizacaoEventoViewModel : ViewModel() {
 
-    private val repository = OrcamentoRepository(ApiClient.orcamentoApiService)
+    private val repository = OrcamentoRepository()
 
     private val _orcamento = MutableStateFlow<OrcamentoResponse?>(null)
     val orcamento: StateFlow<OrcamentoResponse?> = _orcamento

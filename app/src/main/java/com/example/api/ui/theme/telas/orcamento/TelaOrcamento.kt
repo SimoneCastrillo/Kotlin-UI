@@ -1,5 +1,6 @@
 package com.example.api.ui.theme.telas.orcamento
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,6 +8,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
@@ -26,13 +29,27 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
+import androidx.compose.runtime.collectAsState
+
 import com.example.api.ui.theme.telas.login.Login
+import kotlinx.coroutines.flow.forEach
 
 @Composable
-fun Orcamento(name: String, modifier: Modifier = Modifier, navController: NavController) {
-    // Obtendo configurações da tela
+fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
+    val viewModel = OrcamentoViewModel()
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
+    val tiposEvento by viewModel.tiposEvento.collectAsState(emptyList()) // Coleta os tipos de evento da ViewModel
+
+    var evento by remember { mutableStateOf("") } // Estado para o evento selecionado
+    var expanded by remember { mutableStateOf(false) } // E
+    val data = remember { mutableStateOf("01 de Maio de 2025") }
+    val horario = remember { mutableStateOf("16:30") }
+    val quantidade = remember { mutableStateOf("140") }
+
+    LaunchedEffect(Unit) {
+        viewModel.carregarTiposEvento()
+    }
 
     Column {
         Column(
@@ -92,12 +109,11 @@ fun Orcamento(name: String, modifier: Modifier = Modifier, navController: NavCon
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            var data by remember { mutableStateOf("01 de Maio de 2025") }
-            var horario by remember { mutableStateOf("16:30") }
+            var data by remember { mutableStateOf("2025-04-27") }
+            var horario by remember { mutableStateOf("16:30:00") }
             var quantidade by remember { mutableStateOf("140") }
-            var evento by remember { mutableStateOf("Infantil com Balões") }
-
-            val eventos = listOf("Infantil com Balões", "Casamento", "Corporativo")
+            var evento by remember { mutableStateOf("Selecione o tipo de evento") }
+            var eventoId by remember { mutableStateOf<Int?>(null) }
 
             OutlinedTextField(
                 value = data,
@@ -134,39 +150,42 @@ fun Orcamento(name: String, modifier: Modifier = Modifier, navController: NavCon
             Spacer(modifier = Modifier.height(16.dp))
 
             Box {
-                var expanded by remember { mutableStateOf(false) }
                 OutlinedTextField(
                     value = evento,
-                    onValueChange = { },
-                    label = { Text("Evento") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { expanded = !expanded },
+                    onValueChange = { /* Não deve ser editável diretamente */ },
+                    label = { Text("Tipo de Evento") },
                     readOnly = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Gray,
-                        disabledTextColor = Color.Black,
-                        focusedBorderColor = Color(0xFFD9D9D9),
-                        unfocusedBorderColor = Color(0xFFD9D9D9),
-                        disabledBorderColor = Color.Gray,
-                        errorBorderColor = Color.Red,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
-                    )
+                    modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = {
+                        Icon(
+                            Icons.Filled.ArrowDropDown, contentDescription = null,
+                            modifier = Modifier.clickable { expanded = !expanded })
+                    }
                 )
+
                 DropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    eventos.forEach { item ->
+                    if (tiposEvento.isNotEmpty()) {
+                        tiposEvento.forEach { tipo ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    evento = tipo.nome
+                                    eventoId = tipo.id// Atualiza o nome do evento selecionado
+                                    expanded = false // Fecha o menu
+                                    // Aqui você pode fazer algo com o 'tipo' selecionado,
+                                    // como atualizar um estado que guarda o objeto TipoEvento completo.
+                                },
+                                text = { Text(text = tipo.nome) }
+                            )
+                        }
+                    } else {
                         DropdownMenuItem(
-                            onClick = {
-                                evento = item
-                                expanded = false
-                            },
-                            text = { Text(text = item) }
+                            onClick = {},
+                            enabled = false,
+                            text = { Text(text = "Nenhum evento disponível") }
                         )
                     }
                 }
@@ -192,7 +211,12 @@ fun Orcamento(name: String, modifier: Modifier = Modifier, navController: NavCon
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = {},
+                onClick = {
+                    val url = "tela-orcamento2/$eventoId/$data/$horario/$quantidade"
+                    Log.e("Navegacao", "URL para Orcamento2Screen: $url")
+
+                    navController.navigate(url)
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFC54477),
@@ -217,11 +241,56 @@ fun Orcamento(name: String, modifier: Modifier = Modifier, navController: NavCon
     }
 }
 
+//@Composable
+//fun TipoEventoDropdown(viewModel: OrcamentoViewModel) {
+//    val expanded = remember { mutableStateOf(false) }
+//
+//    LaunchedEffect(Unit) {
+//        viewModel.carregarTiposEvento()
+//    }
+//
+//    Box {
+//        OutlinedTextField(
+//            value = viewModel.eventoSelecionadoNome,
+//            onValueChange = {},
+//            label = { Text("Evento") },
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .clickable { expanded.value = true },
+//            readOnly = true
+//        )
+//
+//        DropdownMenu(
+//            expanded = expanded.value,
+//            onDismissRequest = { expanded.value = false }
+//        ) {
+//            if (tiposEvento.isNotEmpty()) {
+//                tiposEvento.forEach { tipo ->
+//                    // Para cada tipo de evento, cria-se um item no menu
+//                    DropdownMenuItem(
+//                        onClick = {
+//                            evento = tipo.nome // Atualiza o evento selecionado
+//                            expanded = false // Fecha o menu
+//                        },
+//                        text = { Text(text = tipo.nome) }
+//                    )
+//                }
+//            } else {
+//                // Caso a lista esteja vazia, exibe uma mensagem
+//                DropdownMenuItem(
+//                    onClick = {},
+//                    text = { Text(text = "Nenhum evento disponível") }
+//                )
+//            }
+//        }
+//    }
+//}
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun OrcamentoPreview() {
     val navController = rememberNavController();
     APITheme {
-        Orcamento("Android", navController = navController)
+        Orcamento(navController = navController)
     }
 }
