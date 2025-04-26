@@ -2,6 +2,7 @@ package com.example.api.ui.theme.telas.orcamento
 
 import android.graphics.BitmapFactory
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,6 +51,15 @@ fun Orcamento2Screen(
 //    viewModelTela2: Orcamento2ViewModel
 ) {
     val viewModelTela2: Orcamento2ViewModel = viewModel()
+
+    val context = LocalContext.current
+
+    LaunchedEffect(viewModelTela2.sucessoMsg, viewModelTela2.erroMsg) {
+        viewModelTela2.sucessoMsg?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     var showDialog by remember { mutableStateOf(false) }
     var observacao by remember { mutableStateOf("") }
 
@@ -89,7 +100,6 @@ fun Orcamento2Screen(
             )
         }
 
-        // Conteúdo Principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -98,7 +108,6 @@ fun Orcamento2Screen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Título (mesmo da sua tela)
             Text(
                 text = "Orçamento",
                 style = TextStyle(
@@ -119,7 +128,6 @@ fun Orcamento2Screen(
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            // Decoração (agora com o nome da decoração selecionada)
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -161,7 +169,11 @@ fun Orcamento2Screen(
             val decoracaoIdFinal = decoracaoSelecionadaId
             val observacaoFinal = observacao.takeIf { it.isNotBlank() }
 
-            // Botão Finalizar
+            if (viewModelTela2.isLoading) {
+                LoadingDialog()
+            }
+
+
             Button(
                 onClick = {
                     viewModelTela2.setDadosOrcamento(
@@ -194,8 +206,8 @@ fun Orcamento2Screen(
                     println("Decoração ID: $decoracaoIdFinal")
                     println("Observação: $observacaoFinal")
 
-                    // Navegar para a próxima tela ou finalizar o processo
                 },
+                enabled = !viewModelTela2.isLoading,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFC54477),
@@ -224,7 +236,6 @@ fun Orcamento2Screen(
         }
     }
 
-    // Modal de Decoração
     if (showDialog) {
         Dialog(onDismissRequest = { showDialog = false }) {
             Box(
@@ -248,7 +259,6 @@ fun Orcamento2Screen(
                         )
                     )
 
-                    // Exibição das fotos das decorações
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -322,32 +332,7 @@ fun Orcamento2Screen(
                                     }
                                 }
                             }
-//                            Box(
-//                                modifier = Modifier
-//                                    .aspectRatio(1f)
-//                                    .background(Color.LightGray)
-//                                    .clickable { viewModelTela2.selecionarDecoracao(decoracao.id) }
-//                            ) {
-//                                Column {
-//
-//                                    Image(
-//                                        bitmap = imageBitmap.asImageBitmap(),
-//                                        contentDescription = decoracao.nome,
-//                                        modifier = Modifier.fillMaxSize(),
-//                                        contentScale = ContentScale.Crop
-//                                    )
-//                                }
-//                                if (decoracaoSelecionadaId == decoracao.id) {
-//                                    Box(
-//                                        modifier = Modifier
-//                                            .fillMaxSize()
-//                                            .background(Color.Black.copy(alpha = 0.3f)),
-//                                        contentAlignment = Alignment.Center
-//                                    ) {
-//                                        Icon(Icons.Default.CheckCircle, contentDescription = "Selecionado", tint = Color.White, modifier = Modifier.size(36.dp))
-//                                    }
-//                                }
-//                            }
+                    }
                         }
                     }
 
@@ -367,6 +352,38 @@ fun Orcamento2Screen(
                         Text(text = textoBotao)
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun LoadingDialog() {
+    Dialog(onDismissRequest = {}) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(200.dp)
+                .background(
+                    color = Color.White,
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .padding(24.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator(color = Color(0xFFC54477))
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Finalizando...",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black
+                    )
+                )
             }
         }
     }

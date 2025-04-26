@@ -16,13 +16,14 @@ import com.example.api.data.session.SessaoUsuario
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class Orcamento2ViewModel() : ViewModel() {
     private val decoracaoRepository = DecoracaoRepository()
     private val orcamentoRepository = OrcamentoRepository()
 
-    var erroMsg by mutableStateOf<String?>(null)
-        private set
+    var erroMsg by mutableStateOf<List<String>>(emptyList()) // Mudando para lista de strings
 
     var sucessoMsg by mutableStateOf<String?>(null)
         private set
@@ -68,25 +69,52 @@ class Orcamento2ViewModel() : ViewModel() {
         request: OrcamentoRequest,
         navController: NavController
     ) {
-        viewModelScope.launch {
-            isLoading = true
-            erroMsg = null
-            sucessoMsg = null
+        if (validarCampos(request)) {
+            viewModelScope.launch {
+                isLoading = true
+                erroMsg = emptyList()
+                sucessoMsg = null
 
-            val token = SessaoUsuario.token!!
-            Log.e("TokenVer", token)
-            val result = orcamentoRepository.cadastrarOrcamento(request, token)
+                val token = SessaoUsuario.token!!
+                val result = orcamentoRepository.cadastrarOrcamento(request, token)
 
-            result.onSuccess { response ->
-                sucessoMsg = "Orçamento criado com sucesso!"
-                val id = response.id
-                navController.navigate("visualizacao-evento/$id/$token")
-            }.onFailure {
-                erroMsg = it.message
+                result.onSuccess { response ->
+                    sucessoMsg = "Orçamento criado com sucesso!"
+                    val id = response.id
+                    navController.navigate("visualizacao-evento/$id/$token")
+                }.onFailure { exception ->
+                    erroMsg = listOf("Erro ao cadastrar o orçamento: ${exception.message}")
+                }
+
+                isLoading = false
             }
-
-            isLoading = false
         }
+    }
+
+
+    fun validarCampos(request: OrcamentoRequest): Boolean {
+        val erros = mutableListOf<String>()
+
+        val dataEvento = LocalDate.parse(request.dataEvento, DateTimeFormatter.ISO_DATE)
+
+        if (dataEvento.isBefore(LocalDate.now())) {
+            erros.add("A data do evento deve ser no futuro.")
+        }
+
+        if (request.qtdConvidados > 180) {
+            erros.add("A quantidade de convidados deve ser no máximo 180.")
+        }
+
+        if (request.inicio == null) {
+            erros.add("O horário de início é obrigatório.")
+        }
+
+        if (erros.isNotEmpty()) {
+            erroMsg = erros
+            return false
+        }
+
+        return true
     }
 
     fun setDadosOrcamento(
