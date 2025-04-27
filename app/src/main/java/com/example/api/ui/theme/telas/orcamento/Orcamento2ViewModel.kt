@@ -51,15 +51,12 @@ class Orcamento2ViewModel() : ViewModel() {
     }
 
     fun buscarDecoracoesPorTipoEvento(tipoEventoId: Int) {
-        Log.e("Orcamento2ErroEvento", "Tipo de evento recebido na tela 2: $tipoEventoId")
         viewModelScope.launch {
 
             try {
                 val response = decoracaoRepository.listarPorTipo(tipoEventoId)
                 _decoracoes.value = response
-                Log.e("Lista", "Decorações recebidas: ${_decoracoes.value}")
             } catch (e: Exception) {
-                Log.e("Erro API", "Erro ao buscar decorações: ${e.message}")
                 _decoracoes.value = emptyList()
             }
         }

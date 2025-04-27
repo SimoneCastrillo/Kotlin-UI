@@ -1,7 +1,7 @@
 package com.example.api.data.model.request.orcamento
 
 data class OrcamentoRequest(
-    val dataEvento: String, // formato ISO "yyyy-MM-dd"
+    val dataEvento: String,
     val qtdConvidados: Int,
     val inicio: String,
     val sugestao: String?,

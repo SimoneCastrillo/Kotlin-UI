@@ -55,4 +55,19 @@ class OrcamentoRepository() {
         }
     }
 
+    suspend fun atualizarOrcamento(id: Int, request: OrcamentoRequest, token: String): Result<OrcamentoResponse> {
+        return try {
+            val response = orcamentoApiService.atualizarOrcamento(id, request, "Bearer $token")
+            if (response.isSuccessful) {
+                response.body()?.let { Result.success(it) }
+                    ?: Result.failure(Exception("Resposta vazia"))
+            } else {
+                Result.failure(Exception(response.errorBody()?.string() ?: "Erro desconhecido"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
 }

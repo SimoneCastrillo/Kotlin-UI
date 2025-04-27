@@ -36,19 +36,16 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import com.example.api.R
 import com.example.api.data.model.request.orcamento.OrcamentoRequest
 import com.example.api.data.session.SessaoUsuario
-import com.example.api.ui.theme.APITheme
+import com.example.api.ui.theme.components.util.LoadingDialog
 
 @Composable
 fun Orcamento2Screen(
     modifier: Modifier = Modifier,
     navController: NavController,
     backStackEntry: NavBackStackEntry,
-//    viewModelTela2: Orcamento2ViewModel
 ) {
     val viewModelTela2: Orcamento2ViewModel = viewModel()
 
@@ -75,9 +72,8 @@ fun Orcamento2Screen(
         }
     }
 
-    val decoracoes by viewModelTela2.decoracoes.collectAsState() // Colete o estado do ViewModel correto
-    Log.e("DecoracoesScreen", "Lista de decorações: ${decoracoes.toString()}")
-    val decoracaoSelecionadaId by viewModelTela2.decoracaoSelecionadaId.collectAsState() // Colete o estado do ViewModel correto
+    val decoracoes by viewModelTela2.decoracoes.collectAsState()
+    val decoracaoSelecionadaId by viewModelTela2.decoracaoSelecionadaId.collectAsState()
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -100,6 +96,7 @@ fun Orcamento2Screen(
             )
         }
 
+        // Conteúdo Principal
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -146,7 +143,6 @@ fun Orcamento2Screen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Campo Observação (mesmo da sua tela)
             OutlinedTextField(
                 value = observacao,
                 onValueChange = { observacao = it },
@@ -170,9 +166,8 @@ fun Orcamento2Screen(
             val observacaoFinal = observacao.takeIf { it.isNotBlank() }
 
             if (viewModelTela2.isLoading) {
-                LoadingDialog()
+                LoadingDialog("Finalizando...")
             }
-
 
             Button(
                 onClick = {
@@ -205,7 +200,6 @@ fun Orcamento2Screen(
                     println("Quantidade: $qtdConvidados")
                     println("Decoração ID: $decoracaoIdFinal")
                     println("Observação: $observacaoFinal")
-
                 },
                 enabled = !viewModelTela2.isLoading,
                 modifier = Modifier.fillMaxWidth(),
@@ -281,7 +275,6 @@ fun Orcamento2Screen(
                             }
                         }
 
-                        Log.e("Decoracoes", "________________________________${decoracoes.toString()}")
                         items(decoracoes) { decoracao ->
                             val base64Image = decoracao.foto
                             val imageBytes = android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT)
@@ -332,14 +325,14 @@ fun Orcamento2Screen(
                                     }
                                 }
                             }
-                    }
+//
                         }
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
-                        onClick = { showDialog = false }, // Fechar o diálogo ao selecionar (ou fazer a seleção ao clicar na foto)
+                        onClick = { showDialog = false },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFC54477),
@@ -357,37 +350,6 @@ fun Orcamento2Screen(
     }
 }
 
-@Composable
-fun LoadingDialog() {
-    Dialog(onDismissRequest = {}) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(200.dp)
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .padding(24.dp)
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                CircularProgressIndicator(color = Color(0xFFC54477))
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Finalizando...",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.Black
-                    )
-                )
-            }
-        }
-    }
-}
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

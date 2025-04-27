@@ -7,6 +7,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface OrcamentoApiService {
@@ -25,6 +26,13 @@ interface OrcamentoApiService {
     @POST("orcamentos")
     suspend fun cadastrarOrcamento(
         @Body orcamento: OrcamentoRequest,
+        @Header("Authorization") token: String
+    ): Response<OrcamentoResponse>
+
+    @PUT("/orcamentos/{id}")
+    suspend fun atualizarOrcamento(
+        @Path("id") id: Int,
+        @Body request: OrcamentoRequest,
         @Header("Authorization") token: String
     ): Response<OrcamentoResponse>
 }
