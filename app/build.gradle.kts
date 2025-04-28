@@ -40,6 +40,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.compose.material:material-icons-extended:1.6.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
@@ -57,6 +58,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.protolite.well.known.types)
+    implementation(libs.androidx.espresso.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

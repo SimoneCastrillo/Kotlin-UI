@@ -20,8 +20,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -42,6 +45,8 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
@@ -55,6 +60,14 @@ import com.example.api.R
 import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.components.TopoLogo
 import com.example.api.ui.theme.telas.pagina_inicial.PaginaInicialViewModel
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 
 @Composable
 fun Login(name: String, modifier: Modifier = Modifier, navController: NavController) {
@@ -63,6 +76,7 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
     var isChecked by remember { mutableStateOf(false) }
+    var passwordVisible by remember { mutableStateOf(false) }
 
     val erro = viewModel.erroMsg
     val isLoading = viewModel.isLoading
@@ -150,7 +164,15 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
                             unfocusedBorderColor = Color(0xFFD9D9D9)
-                        )
+                        ),
+                        singleLine = true,
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val icon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(imageVector = icon, contentDescription = null)
+                            }
+                        }
                     )
                 }
 

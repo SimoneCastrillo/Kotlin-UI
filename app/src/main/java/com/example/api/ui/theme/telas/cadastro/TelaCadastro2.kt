@@ -20,8 +20,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -36,10 +41,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,6 +72,9 @@ fun Cadastro2(
     val viewModel: CadastroViewModel = viewModel()
     val nome = backStackEntry.arguments?.getString("nome") ?: ""
     val telefone = backStackEntry.arguments?.getString("telefone") ?: ""
+    var passwordVisible by remember { mutableStateOf(false) }
+    var passwordConfirmationVisible by remember { mutableStateOf(false) }
+
 
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
@@ -108,7 +119,8 @@ fun Cadastro2(
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Insira seu email") },
+                        singleLine = true,
+                        label = { Text(stringResource(R.string.insira_seu_email)) },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
                             unfocusedBorderColor = Color(0xFFD9D9D9)
@@ -130,7 +142,8 @@ fun Cadastro2(
                     OutlinedTextField(
                         value = emailConfirmacao,
                         onValueChange = { emailConfirmacao = it },
-                        label = { Text("Confirme seu email") },
+                        singleLine = true,
+                        label = { Text(stringResource(R.string.confirme_seu_email)) },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
                             unfocusedBorderColor = Color(0xFFD9D9D9)
@@ -152,7 +165,14 @@ fun Cadastro2(
                     OutlinedTextField(
                         value = senha,
                         onValueChange = { senha = it },
-                        label = { Text("Insira sua senha") },
+                        label = { Text(stringResource(R.string.insira_sua_senha)) },
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val icon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(imageVector = icon, contentDescription = null)
+                            }
+                        },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
                             unfocusedBorderColor = Color(0xFFD9D9D9)
@@ -174,7 +194,14 @@ fun Cadastro2(
                     OutlinedTextField(
                         value = senhaConfirmacao,
                         onValueChange = { senhaConfirmacao = it },
-                        label = { Text("Confirme sua senha") },
+                        label = { Text(stringResource(R.string.confirme_sua_senha)) },
+                        visualTransformation = if (passwordConfirmationVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val icon = if (passwordConfirmationVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                            IconButton(onClick = { passwordConfirmationVisible = !passwordConfirmationVisible }) {
+                                Icon(imageVector = icon, contentDescription = null)
+                            }
+                        },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
                             unfocusedBorderColor = Color(0xFFD9D9D9)
@@ -229,7 +256,9 @@ fun Cadastro2(
                     }
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
+//                Spacer(modifier = Modifier.weight(1f))
+                  Spacer(modifier = Modifier.height(24.dp))
+
 
                 Box(
                     modifier = Modifier

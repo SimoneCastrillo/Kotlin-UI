@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,7 +19,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,36 +66,60 @@ fun Cadastro(name: String, modifier: Modifier = Modifier, navController: NavCont
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Formulário
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp)
                     .weight(1f, fill = false), // Garante que a altura ocupe o necessário, mas contribua para o preenchimento
             ) {
-                OutlinedTextField(
-                    value = nome,
-                    onValueChange = { nome = it },
-                    label = { Text("Insira seu nome") },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFD9D9D9),
-                        unfocusedBorderColor = Color(0xFFD9D9D9)
+
+                Box {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .padding(top = 8.dp)
+                            .background(Color(0x33D9D9D9))
                     )
-                )
+
+                    OutlinedTextField(
+                        value = nome,
+                        onValueChange = { nome = it },
+                        singleLine = true,
+                        label = { Text(stringResource(R.string.insira_seu_nome)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFD9D9D9),
+                            unfocusedBorderColor = Color(0xFFD9D9D9)
+                        )
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedTextField(
-                    value = telefone,
-                    onValueChange = { telefone = it },
-                    label = { Text("(00) 91234-5678") },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFFD9D9D9),
-                        unfocusedBorderColor = Color(0xFFD9D9D9)
+                Box {
+
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .padding(top = 8.dp)
+                            .background(Color(0x33D9D9D9))
                     )
-                )
+
+                    OutlinedTextField(
+                        value = telefone,
+                        onValueChange = { telefone = it },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        label = { Text(stringResource(R.string.insira_seu_telefone)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFD9D9D9),
+                            unfocusedBorderColor = Color(0xFFD9D9D9)
+                        )
+                    )
+                }
+
+
 
                 if (errorMessage.isNotEmpty()) {
                     Text(
@@ -157,7 +184,7 @@ fun Cadastro(name: String, modifier: Modifier = Modifier, navController: NavCont
                         .height(50.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text("Avançar", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    Text((stringResource(R.string.avancar)), color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 }
 
                 Spacer(modifier = Modifier.height(64.dp))
