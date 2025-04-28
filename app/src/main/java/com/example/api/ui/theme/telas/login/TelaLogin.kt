@@ -20,11 +20,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,49 +38,82 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
+import com.example.api.ui.theme.components.TopoLogo
+import com.example.api.ui.theme.telas.pagina_inicial.PaginaInicialViewModel
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 
 @Composable
 fun Login(name: String, modifier: Modifier = Modifier, navController: NavController) {
+    val viewModelTelaInicial: PaginaInicialViewModel = viewModel()
+    val viewModel: LoginViewModel = viewModel()
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
     var isChecked by remember { mutableStateOf(false) }
+    var passwordVisible by remember { mutableStateOf(false) }
 
+    val erro = viewModel.erroMsg
+    val isLoading = viewModel.isLoading
+    val usuario = viewModel.usuarioLogado
+
+    LaunchedEffect(usuario) {
+        if (usuario != null) {
+            val id = usuario.id
+            val token = usuario.token
+
+            navController.navigate("pagina-inicial/$id/$token") {
+                popUpTo("login") { inclusive = true }
+            }
+        }
+    }
 
     Column {
-        BoxWithConstraints(
-            modifier = Modifier
-                .width(412.dp)
-                .height(307.dp)
-                .background(color = Color(0xFFC54477), shape = RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = 0.dp, bottomEnd = 0.dp))
-                .padding(start = 80.dp, top = 63.dp, end = 80.dp, bottom = 63.dp)
-        ) {
-            val boxWidth = maxWidth
-            val boxHeight = maxHeight
-
-            Image(
-                painter = painterResource(id = R.drawable.logo_branco),
-                contentDescription = "Descrição da Imagem",
-                modifier = Modifier
-                    .width(boxWidth)
-                    .height(boxHeight),
-                contentScale = ContentScale.Fit
-            )
-        }
+        TopoLogo()
+//        BoxWithConstraints(
+//            modifier = Modifier
+//                .width(412.dp)
+//                .height(307.dp)
+//                .background(color = Color(0xFFC54477), shape = RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = 0.dp, bottomEnd = 0.dp))
+//                .padding(start = 80.dp, top = 63.dp, end = 80.dp, bottom = 63.dp)
+//        ) {
+//            val boxWidth = maxWidth
+//            val boxHeight = maxHeight
+//
+//            Image(
+//                painter = painterResource(id = R.drawable.logo_branco),
+//                contentDescription = "Descrição da Imagem",
+//                modifier = Modifier
+//                    .width(boxWidth)
+//                    .height(boxHeight),
+//                contentScale = ContentScale.Fit
+//            )
+//        }
 
         Box(
             modifier = Modifier
@@ -87,6 +124,7 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+
             ) {
                 Box {
 
@@ -99,8 +137,8 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
 
                     OutlinedTextField(
                         value = email,
-                        onValueChange = {email = it},
-                        label = { Text("Email") },
+                        onValueChange = { email = it },
+                        label = { Text(stringResource(id = R.string.email)) },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
                             unfocusedBorderColor = Color(0xFFD9D9D9)
@@ -122,15 +160,47 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
                     OutlinedTextField(
                         value = senha,
                         onValueChange = { senha = it },
-                        label = { Text("Senha") },
+                        label = { Text(stringResource(id = R.string.senha)) },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
                             unfocusedBorderColor = Color(0xFFD9D9D9)
-                        )
+                        ),
+                        singleLine = true,
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val icon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(imageVector = icon, contentDescription = null)
+                            }
+                        }
                     )
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
+
+                erro?.let {
+                    val mensagem = when (it) {
+                        "invalid_login" -> stringResource(id = R.string.erro_login_invalido)
+                        "network_error" -> stringResource(id = R.string.erro_rede)
+                        else -> it
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp)
+                    ) {
+                        Text(
+                            text = mensagem,
+                            color = Color.Red,
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
 
                 Box(modifier = Modifier
                     .width(305.dp)
@@ -154,14 +224,14 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
                                     .scale(0.5f),
                                 checked = isChecked,
                                 onCheckedChange = { checked ->
-                                    isChecked = checked // Atualiza o estado quando o usuário marcar/desmarcar
+                                    isChecked = checked
                                 }
                             )
 
                             Spacer(modifier = Modifier.width(4.dp))
 
                             Text(
-                                text = "Salvar acesso",
+                                text = stringResource(id = R.string.salvar_acesso),
                                 style = TextStyle(
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight(400),
@@ -177,7 +247,7 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
                                 .clickable {
                                     navController.navigate("redefinir-senha-1")
                                 },
-                            text = "Esqueci minha senha",
+                            text = stringResource(id = R.string.esqueci_senha),
                             style = TextStyle(
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight(400),
@@ -198,8 +268,9 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
                 ){
                     Button(
                         onClick = {
-                            navController.navigate("pagina-inicial")
+                            viewModel.login(email, senha)
                         },
+                        enabled = !isLoading,
                         colors = ButtonDefaults.buttonColors(
                             Color.Transparent,
                         ),
@@ -210,7 +281,7 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
                             .padding(start = 16.dp, top = 2.dp, end = 16.dp, bottom = 2.dp)
                     ){
                         Text(
-                            text = "Login",
+                            text = stringResource(id = R.string.login),
                             style = TextStyle(
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight(800),
@@ -221,7 +292,7 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
                     }
                 }
 
-                Spacer(modifier = Modifier.height(122.dp))
+                Spacer(modifier = Modifier.weight(1f))
 
                 Box(
                     modifier = Modifier
@@ -232,12 +303,12 @@ fun Login(name: String, modifier: Modifier = Modifier, navController: NavControl
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                navController.navigate("cadastro-1")
+                                navController.navigate("cadastro")
                             },
                         text = buildAnnotatedString {
-                            append("Ainda não possui uma conta? ")
+                            append(stringResource(id = R.string.ainda_nao_possui_conta))
                             withStyle(style = SpanStyle(color = Color(0xFFC54477))) {
-                                append("Cadastre-se")
+                                append(stringResource(id = R.string.cadastre_se))
                             }
                         },
                         style = TextStyle(

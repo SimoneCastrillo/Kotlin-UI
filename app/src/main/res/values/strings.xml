@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">API</string>
+    <string name="erro_login_invalido">Email ou senha inválidos</string>
+    <string name="erro_rede">Erro de conexão. Tente novamente.</string>
+    <string name="email">Email</string>
+    <string name="senha">Senha</string>
+    <string name="login">Login</string>
+    <string name="salvar_acesso">Salvar acesso</string>
+    <string name="esqueci_senha">Esqueci minha senha</string>
+    <string name="erro_credenciais">Email ou senha inválidos</string>
+    <string name="erro_desconhecido">Erro desconhecido</string>
+    <string name="ainda_nao_possui_conta">Ainda não possui uma conta? </string>
+    <string name="cadastre_se">Cadastre-se</string>
+    <string name="erro_acesso_negado">Acesso negado. Faça login novamente.</string>
+    <string name="erro_carregar_perfil">Erro ao carregar perfil.</string>
+    <string name="quantidade_orcamento">Quantidade de orçamentos.</string>
+    <string name="nome">Nome.</string>
+    <string name="celular">Celular.</string>
+    <string name="insira_seu_nome">Insira seu nome.</string>
+    <string name="avancar">Avançar.</string>
+    <string name="insira_seu_email">Insira seu email.</string>
+    <string name="confirme_seu_email">Confirme seu email.</string>
+    <string name="insira_sua_senha">Insira sua senha.</string>
+    <string name="confirme_sua_senha">Confirme sua senha.</string>
+    <string name="insira_seu_telefone">Insira seu telefone.</string>
+    <string name="decoracao">Decoração.</string>
+    <string name="sabor_do_bolo">Sabor do bolo.</string>
+    <string name="quantidade_convidados">Quantidade de convidados.</string>
+    <string name="valor_total">Valor total.</string>
+
 </resources>

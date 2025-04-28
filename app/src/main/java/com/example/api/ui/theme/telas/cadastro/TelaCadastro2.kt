@@ -16,10 +16,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -34,47 +41,50 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.api.R
+import com.example.api.data.model.request.usuario.UsuarioCadastroRequest
 import com.example.api.ui.theme.APITheme
+import com.example.api.ui.theme.components.TopoLogo
 
 @Composable
-fun Cadastro2(name: String, modifier: Modifier = Modifier, navController: NavController) {
+fun Cadastro2(
+    name: String,
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    backStackEntry: NavBackStackEntry
+) {
+    val viewModel: CadastroViewModel = viewModel()
+    val nome = backStackEntry.arguments?.getString("nome") ?: ""
+    val telefone = backStackEntry.arguments?.getString("telefone") ?: ""
+    var passwordVisible by remember { mutableStateOf(false) }
+    var passwordConfirmationVisible by remember { mutableStateOf(false) }
+
+
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
     var emailConfirmacao by remember { mutableStateOf("") }
     var senhaConfirmacao by remember { mutableStateOf("") }
 
-    Column {
-        BoxWithConstraints(
-            modifier = Modifier
-                .width(412.dp)
-                .height(307.dp)
-                .background(color = Color(0xFFC54477), shape = RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = 0.dp, bottomEnd = 0.dp))
-                .padding(start = 80.dp, top = 63.dp, end = 80.dp, bottom = 63.dp)
-        ) {
-            val boxWidth = maxWidth
-            val boxHeight = maxHeight
+    var erro by remember { mutableStateOf<String?>(null) }
 
-            Image(
-                painter = painterResource(id = R.drawable.logo_branco),
-                contentDescription = "Descrição da Imagem",
-                modifier = Modifier
-                    .width(boxWidth)
-                    .height(boxHeight),
-                contentScale = ContentScale.Fit
-            )
-        }
+    Column {
+       TopoLogo()
 
         Box(
             modifier = Modifier
@@ -85,7 +95,17 @@ fun Cadastro2(name: String, modifier: Modifier = Modifier, navController: NavCon
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
             ) {
+
+                erro?.let {
+                    Text(
+                        text = it,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
 
                 Box {
 
@@ -99,7 +119,8 @@ fun Cadastro2(name: String, modifier: Modifier = Modifier, navController: NavCon
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Insira seu email") },
+                        singleLine = true,
+                        label = { Text(stringResource(R.string.insira_seu_email)) },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
                             unfocusedBorderColor = Color(0xFFD9D9D9)
@@ -121,7 +142,8 @@ fun Cadastro2(name: String, modifier: Modifier = Modifier, navController: NavCon
                     OutlinedTextField(
                         value = emailConfirmacao,
                         onValueChange = { emailConfirmacao = it },
-                        label = { Text("Confirme seu email") },
+                        singleLine = true,
+                        label = { Text(stringResource(R.string.confirme_seu_email)) },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
                             unfocusedBorderColor = Color(0xFFD9D9D9)
@@ -143,7 +165,14 @@ fun Cadastro2(name: String, modifier: Modifier = Modifier, navController: NavCon
                     OutlinedTextField(
                         value = senha,
                         onValueChange = { senha = it },
-                        label = { Text("Insira sua senha") },
+                        label = { Text(stringResource(R.string.insira_sua_senha)) },
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val icon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(imageVector = icon, contentDescription = null)
+                            }
+                        },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
                             unfocusedBorderColor = Color(0xFFD9D9D9)
@@ -165,7 +194,14 @@ fun Cadastro2(name: String, modifier: Modifier = Modifier, navController: NavCon
                     OutlinedTextField(
                         value = senhaConfirmacao,
                         onValueChange = { senhaConfirmacao = it },
-                        label = { Text("Confirme sua senha") },
+                        label = { Text(stringResource(R.string.confirme_sua_senha)) },
+                        visualTransformation = if (passwordConfirmationVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val icon = if (passwordConfirmationVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                            IconButton(onClick = { passwordConfirmationVisible = !passwordConfirmationVisible }) {
+                                Icon(imageVector = icon, contentDescription = null)
+                            }
+                        },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
                             unfocusedBorderColor = Color(0xFFD9D9D9)
@@ -181,7 +217,24 @@ fun Cadastro2(name: String, modifier: Modifier = Modifier, navController: NavCon
                 ){
                     Button(
                         onClick = {
-                            navController.navigate("login")
+                            erro = null
+
+                            if (email != emailConfirmacao) {
+                                erro = "Os e-mails não coincidem"
+                            }
+
+                            if (senha != senhaConfirmacao) {
+                                erro = "As senhas não coincidem"
+                            }
+
+                            val usuario = UsuarioCadastroRequest(
+                                nome = nome,
+                                email = email,
+                                senha = senha,
+                                telefone = telefone
+                            )
+
+                            viewModel.cadastrarUsuario(usuario, navController)
                         },
                         colors = ButtonDefaults.buttonColors(
                             Color.Transparent,
@@ -203,7 +256,9 @@ fun Cadastro2(name: String, modifier: Modifier = Modifier, navController: NavCon
                     }
                 }
 
-                Spacer(modifier = Modifier.height(25.dp))
+//                Spacer(modifier = Modifier.weight(1f))
+                  Spacer(modifier = Modifier.height(24.dp))
+
 
                 Box(
                     modifier = Modifier
@@ -238,9 +293,10 @@ fun Cadastro2(name: String, modifier: Modifier = Modifier, navController: NavCon
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GreetingPreviewCadastro2() {
-    val navController = rememberNavController()
-
-    APITheme {
-        Cadastro2("Android", navController = navController)
-    }
+//    val navController = rememberNavController()
+//
+//    APITheme {
+//        val backStackEntry = navController.getBackStackEntry("cadastro-2")
+//        Cadastro2("Android", navController = navController, backStackEntry =  NavBackStackEntry)
+//    }
 }

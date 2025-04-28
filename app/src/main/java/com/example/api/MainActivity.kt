@@ -50,21 +50,27 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.telas.cadastro.Cadastro
 import com.example.api.ui.theme.telas.cadastro.Cadastro2
 import com.example.api.ui.theme.telas.login.Login
-import com.example.api.ui.theme.telas.pagina_inicial.TelaPaginaIncial
+import com.example.api.ui.theme.telas.orcamento.Orcamento
 import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha1
 import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha2
 import com.example.api.ui.theme.telas.redefinicao_senha.RedefinirSenha3
 import com.example.api.ui.theme.telas.visualizacao_evento.TelaVisualizacaoEvento
-import com.example.api.ui.theme.telas.orcamento.Orcamento
 import com.example.api.ui.theme.telas.orcamento.Orcamento2Screen
+import com.example.api.ui.theme.telas.orcamento.Orcamento2ViewModel
+import com.example.api.ui.theme.telas.orcamento.OrcamentoPreview2
+import com.example.api.ui.theme.telas.orcamento.OrcamentoViewModel
+import com.example.api.ui.theme.telas.pagina_inicial.TelaPaginaInicial
 import com.example.api.ui.theme.telas.perfil.PerfilScreen
+import com.example.api.ui.theme.telas.perfil.TelaPerfil
 
 
 class MainActivity : ComponentActivity() {
@@ -78,12 +84,12 @@ class MainActivity : ComponentActivity() {
                     Login("Android", navController = navController)
                 }
 
-                composable("cadastro-1") {
-                    Cadastro("Android", navController = navController)
+                composable("cadastro") {
+                    Cadastro(name = "Android", navController = navController)
                 }
 
-                composable("cadastro-2") {
-                    Cadastro2("Android", navController = navController)
+                composable("cadastro-2/{nome}/{telefone}") { backStackEntry ->
+                    Cadastro2("name", navController = navController, backStackEntry = backStackEntry)
                 }
 
                 composable("redefinir-senha-1") {
@@ -98,13 +104,53 @@ class MainActivity : ComponentActivity() {
                     RedefinirSenha3("Android", navController = navController)
                 }
 
-                composable("pagina-inicial") {
-                    TelaPaginaIncial("Android", navController = navController)
+                composable("visualizacao-evento/{id}/{token}") { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+                    val token = backStackEntry.arguments?.getString("token")
+                    if (id != null && token != null) {
+                        TelaVisualizacaoEvento(id = id, token = token, navController = navController)
+                    }
                 }
 
-                composable("visualizacao-evento") {
-                    TelaVisualizacaoEvento("Android", navController = navController)
+                composable("tela-orcamento"){
+                    Orcamento(navController = navController)
                 }
+
+                composable(
+                    "tela-orcamento2/{tipoEventoId}/{data}/{horario}/{quantidade}",
+                    arguments = listOf(
+                        navArgument("tipoEventoId") { type = NavType.IntType },
+                        navArgument("data") { type = NavType.StringType },
+                        navArgument("horario") { type = NavType.StringType },
+                        navArgument("quantidade") { type = NavType.StringType }
+                    )
+                ) { backStackEntry ->
+                    Orcamento2Screen(
+                        navController = navController,
+                        backStackEntry = backStackEntry,
+//                        viewModelTela2 = Orcamento2ViewModel()
+                    )
+                }
+
+                composable("tela-perfil/{id}/{token}") { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+                    val token = backStackEntry.arguments?.getString("token")
+
+                    if (id != null && token != null) {
+                        PerfilScreen(id = id, token = token, navController = navController)
+                    }
+                }
+
+                composable("pagina-inicial/{id}/{token}") { backStackEntry ->
+                    val id = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+                    val token = backStackEntry.arguments?.getString("token")
+
+                    if (id != null && token != null) {
+                        TelaPaginaInicial(id = id, token = token, navController = navController)
+                    }
+                }
+
+
             }
         }
     }
@@ -113,7 +159,8 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GreetingPreview() {
+    val navController = rememberNavController();
     APITheme {
-        PerfilScreen()
+        Cadastro("Android", navController = navController)
     }
 }
