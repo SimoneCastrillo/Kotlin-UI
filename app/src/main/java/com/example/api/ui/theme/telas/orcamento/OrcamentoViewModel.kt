@@ -55,18 +55,14 @@ class OrcamentoViewModel : ViewModel() {
     fun carregarTiposEvento() {
         viewModelScope.launch {
             try {
-                val tipos = tipoEventoRepo.listar()  // Aqui você busca os dados do repositório
-                Log.d("OrcamentoTeste", "Tipos de evento carregados: $tipos")
-                _tiposEvento.value = tipos // Atualiza o StateFlow com os dados carregados
-                Log.d("OrcamentoErro", "Tipos de evento carregados: ${_tiposEvento.value}")
+                val tipos = tipoEventoRepo.listar()
+                _tiposEvento.value = tipos
             } catch (e: Exception) {
-                Log.e("OrcamentoViewModel", "Erro ao carregar tipos de evento", e)
             }
         }
     }
 
     fun buscarDecoracoesPorTipoEvento(tipoEventoId: Int) {
-        Log.e("Orcamento2ErroEvento", "Tipo de evento recebido na tela 2: $tipoEventoId")
         viewModelScope.launch {
             try {
                 val response = decoracaoRepo.listarPorTipo(tipoEventoId)

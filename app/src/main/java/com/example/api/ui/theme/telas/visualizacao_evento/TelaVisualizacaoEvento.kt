@@ -95,7 +95,6 @@ fun TelaVisualizacaoEvento(id: Int, token: String, modifier: Modifier = Modifier
     }
     val dataFormatada = formatarData(orcamento?.dataEvento ?: "2000-01-01")
     val tipoEventoId = orcamento?.tipoEvento?.id ?: 0
-    Log.e("AtualizacaoTipoEvento", "$tipoEventoId")
 
     LaunchedEffect(tipoEventoId) {
         tipoEventoId.let {
