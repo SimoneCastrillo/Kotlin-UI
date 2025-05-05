@@ -61,7 +61,6 @@ fun Orcamento2Screen(
     var observacao by remember { mutableStateOf("") }
 
     val tipoEventoId = backStackEntry.arguments?.getInt("tipoEventoId")
-    Log.e("Orcamento2Screen", "TipoEventoId recebido: $tipoEventoId")
     val dataRecebida = backStackEntry.arguments?.getString("data")
     val horarioRecebido = backStackEntry.arguments?.getString("horario")
     val quantidadeRecebida = backStackEntry.arguments?.getString("quantidade")?.toIntOrNull() ?: 0

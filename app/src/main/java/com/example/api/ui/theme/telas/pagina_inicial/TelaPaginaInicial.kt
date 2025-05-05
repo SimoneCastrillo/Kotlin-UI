@@ -1,5 +1,6 @@
 package com.example.api.ui.theme.telas.pagina_inicial
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -47,6 +48,7 @@ fun TelaPaginaInicial(
     val orcamentos by viewModel.orcamentos.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val erroMsg by viewModel.erroMsg.collectAsState()
+    val mensagemResId = viewModel.mensagemResId.collectAsState().value
 
     LaunchedEffect(Unit) {
         viewModel.carregarOrcamentos(id, token)
@@ -98,6 +100,14 @@ fun TelaPaginaInicial(
                 erroMsg != null -> item {
                     Text(
                         text = stringResource(id = R.string.erro_rede),
+                        color = Color.Red,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+
+                mensagemResId != null -> item {
+                    Text(
+                        text = stringResource(id = mensagemResId),
                         color = Color.Red,
                         modifier = Modifier.padding(16.dp)
                     )

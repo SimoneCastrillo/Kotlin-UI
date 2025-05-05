@@ -12,9 +12,8 @@ class OrcamentoRepository() {
         return try {
             val response = orcamentoApiService.getOrcamentosPorUsuario(id, "Bearer $token")
             if (response.isSuccessful) {
-                response.body()?.let {
-                    Result.success(it)
-                } ?: Result.failure(Exception("dados_invalidos"))
+                val body = response.body() ?: emptyList()
+                Result.success(body)
             } else {
                 Result.failure(Exception("acesso_negado"))
             }

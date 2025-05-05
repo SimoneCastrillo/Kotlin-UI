@@ -26,6 +26,7 @@
     <string name="decoracao">Decoração.</string>
     <string name="sabor_do_bolo">Sabor do bolo.</string>
     <string name="quantidade_convidados">Quantidade de convidados.</string>
+    <string name="solicite_ja_um_orcamento">Solicite já um orçamento!.</string>
     <string name="valor_total">Valor total.</string>
 
 </resources>

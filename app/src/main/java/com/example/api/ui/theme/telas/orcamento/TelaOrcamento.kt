@@ -213,7 +213,6 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
             Button(
                 onClick = {
                     val url = "tela-orcamento2/$eventoId/$data/$horario/$quantidade"
-                    Log.e("Navegacao", "URL para Orcamento2Screen: $url")
 
                     navController.navigate(url)
                 },
