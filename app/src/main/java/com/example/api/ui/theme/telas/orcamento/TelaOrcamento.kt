@@ -1,4 +1,8 @@
+import android.app.DatePickerDialog
 import android.content.Context
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,10 +33,6 @@ import com.example.api.R
 import com.example.api.ui.theme.APITheme
 import androidx.compose.runtime.collectAsState
 import com.example.api.ui.theme.telas.orcamento.OrcamentoViewModel
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.timepicker.MaterialTimePicker
-import com.google.android.material.timepicker.TimeFormat
-import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
@@ -64,7 +64,6 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
             Box(
                 modifier = Modifier
                     .width((screenWidth * 0.25f))
@@ -118,7 +117,7 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        showDatePicker(context) { selectedDate -> data = selectedDate }
+                        showDatePickerDialog(context) { selectedDate -> data = selectedDate }
                     },
                 readOnly = true
             )
@@ -132,7 +131,7 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        showTimePicker(context) { selectedTime -> horario = selectedTime }
+                        // Implemente o TimePicker se necessário
                     },
                 readOnly = true
             )
@@ -226,27 +225,18 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
     }
 }
 
-fun showDatePicker(context: Context, onDateSelected: (String) -> Unit) {
-    val datePicker = MaterialDatePicker.Builder.datePicker().build()
-    datePicker.addOnPositiveButtonClickListener {
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val dateString = sdf.format(Date(it))
-        onDateSelected(dateString)
-    }
-    datePicker.show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager, "datePicker")
-}
+fun showDatePickerDialog(context: Context, onDateSelected: (String) -> Unit) {
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-fun showTimePicker(context: Context, onTimeSelected: (String) -> Unit) {
-    val timePicker = MaterialTimePicker.Builder()
-        .setTimeFormat(TimeFormat.CLOCK_24H)
-        .build()
-    timePicker.addOnPositiveButtonClickListener {
-        val hour = timePicker.hour
-        val minute = timePicker.minute
-        val timeString = String.format("%02d:%02d:00", hour, minute)
-        onTimeSelected(timeString)
-    }
-    timePicker.show((context as androidx.fragment.app.FragmentActivity).supportFragmentManager, "timePicker")
+    val datePickerDialog = DatePickerDialog(context, { _, year, monthOfYear, dayOfMonth ->
+        val selectedDate = String.format("%04d-%02d-%02d", year, monthOfYear + 1, dayOfMonth)
+        onDateSelected(selectedDate)
+    }, year, month, day)
+
+    datePickerDialog.show()
 }
 
 @Preview(showBackground = true, showSystemUi = true)
