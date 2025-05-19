@@ -20,8 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,15 +69,14 @@ fun Cadastro(name: String, modifier: Modifier = Modifier, navController: NavCont
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(64.dp))
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-                    .weight(1f, fill = false), // Garante que a altura ocupe o necessário, mas contribua para o preenchimento
+                    .width(412.dp)
+                    .padding(start = 64.dp, end = 64.dp)
+                    .align(Alignment.CenterHorizontally)
             ) {
-
                 Box {
                     Box(
                         modifier = Modifier
@@ -86,7 +90,8 @@ fun Cadastro(name: String, modifier: Modifier = Modifier, navController: NavCont
                         onValueChange = { nome = it },
                         singleLine = true,
                         label = { Text(stringResource(R.string.insira_seu_nome)) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
                             unfocusedBorderColor = Color(0xFFD9D9D9)
@@ -94,10 +99,9 @@ fun Cadastro(name: String, modifier: Modifier = Modifier, navController: NavCont
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(28.dp))
 
                 Box {
-
                     Box(
                         modifier = Modifier
                             .matchParentSize()
@@ -111,7 +115,8 @@ fun Cadastro(name: String, modifier: Modifier = Modifier, navController: NavCont
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         label = { Text(stringResource(R.string.insira_seu_telefone)) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Color(0xFFD9D9D9),
                             unfocusedBorderColor = Color(0xFFD9D9D9)
@@ -119,53 +124,19 @@ fun Cadastro(name: String, modifier: Modifier = Modifier, navController: NavCont
                     )
                 }
 
-
-
                 if (errorMessage.isNotEmpty()) {
                     Text(
                         text = errorMessage,
                         color = Color.Red,
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(top = 8.dp)
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center
                     )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clip(CircleShape)
-                            .background(Color(0xFFC54477))
-                    ) {
-                        Text("1", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .width(20.dp)
-                            .height(2.dp)
-                            .background(Color(0xFFFFB6C1))
-                    )
-
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .border(width = 2.dp, color = Color(0xFFFFB6C1), shape = CircleShape)
-                            .size(20.dp)
-                            .clip(CircleShape)
-                    ) {
-                        Text("2", color = Color(0xFFFFB6C1), fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(46.dp))
 
                 Button(
                     onClick = {
@@ -180,25 +151,49 @@ fun Cadastro(name: String, modifier: Modifier = Modifier, navController: NavCont
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC54477)),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
+                        .width(412.dp)
+                        .height(45.dp)
+                        .background(
+                            color = Color(0xFFC54477),
+                            shape = RoundedCornerShape(size = 16.dp)
+                        )
+                        .padding(horizontal = 16.dp, vertical = 2.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text((stringResource(R.string.avancar)), color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = stringResource(R.string.avancar),
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(64.dp))
 
-                TelaComTextoLogin {
-                    navController.navigate("login")
-                }
-
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            navController.navigate("login")
+                        },
+                    text = buildAnnotatedString {
+                        append(stringResource(id = R.string.ja_possui_conta))
+                        withStyle(style = SpanStyle(color = Color(0xFFC54477))) {
+                            append(stringResource(id = R.string.login))
+                        }
+                    },
+                    style = TextStyle(
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color(0xFF000000),
+                        textAlign = TextAlign.Center
+                    )
+                )
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
     }
 }
-
 
 @Preview(showSystemUi = true)
 @Composable

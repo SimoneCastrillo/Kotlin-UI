@@ -13,20 +13,20 @@
     <string name="cadastre_se">Cadastre-se</string>
     <string name="erro_acesso_negado">Acesso negado. Faça login novamente.</string>
     <string name="erro_carregar_perfil">Erro ao carregar perfil.</string>
-    <string name="quantidade_orcamento">Quantidade de orçamentos.</string>
-    <string name="nome">Nome.</string>
-    <string name="celular">Celular.</string>
-    <string name="insira_seu_nome">Insira seu nome.</string>
-    <string name="avancar">Avançar.</string>
-    <string name="insira_seu_email">Insira seu email.</string>
-    <string name="confirme_seu_email">Confirme seu email.</string>
-    <string name="insira_sua_senha">Insira sua senha.</string>
-    <string name="confirme_sua_senha">Confirme sua senha.</string>
-    <string name="insira_seu_telefone">Insira seu telefone.</string>
-    <string name="decoracao">Decoração.</string>
-    <string name="sabor_do_bolo">Sabor do bolo.</string>
-    <string name="quantidade_convidados">Quantidade de convidados.</string>
-    <string name="solicite_ja_um_orcamento">Solicite já um orçamento!.</string>
-    <string name="valor_total">Valor total.</string>
-
+    <string name="quantidade_orcamento">Quantidade de orçamentos</string>
+    <string name="nome">Nome</string>
+    <string name="celular">Celular</string>
+    <string name="insira_seu_nome">Insira seu nome</string>
+    <string name="avancar">Avançar</string>
+    <string name="insira_seu_email">Insira seu email</string>
+    <string name="confirme_seu_email">Confirme seu email</string>
+    <string name="insira_sua_senha">Insira sua senha</string>
+    <string name="confirme_sua_senha">Confirme sua senha</string>
+    <string name="insira_seu_telefone">Insira seu telefone</string>
+    <string name="decoracao">Decoração</string>
+    <string name="sabor_do_bolo">Sabor do bolo</string>
+    <string name="quantidade_convidados">Quantidade de convidados</string>
+    <string name="solicite_ja_um_orcamento">Solicite já um orçamento!</string>
+    <string name="valor_total">Valor total</string>
+    <string name="ja_possui_conta">Já possui uma conta? </string>
 </resources>
