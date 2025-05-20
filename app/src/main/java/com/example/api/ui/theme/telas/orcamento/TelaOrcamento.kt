@@ -1,8 +1,7 @@
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +35,7 @@ import androidx.compose.runtime.collectAsState
 import com.example.api.ui.theme.telas.orcamento.OrcamentoViewModel
 import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
     val viewModel = OrcamentoViewModel()
@@ -86,7 +87,6 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Título
             Text(
                 text = "Orçamento",
                 style = TextStyle(
@@ -119,7 +119,11 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
                     .clickable {
                         showDatePickerDialog(context) { selectedDate -> data = selectedDate }
                     },
-                readOnly = true
+                readOnly = true,
+                enabled = false,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    disabledTextColor = Color.Black
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -131,9 +135,13 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        // Implemente o TimePicker se necessário
+                        showTimePickerDialog(context) { selectedTime -> horario = selectedTime }
                     },
-                readOnly = true
+                readOnly = true,
+                enabled = false,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    disabledTextColor = Color.Black
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -141,7 +149,7 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
             Box {
                 OutlinedTextField(
                     value = evento,
-                    onValueChange = { },
+                    onValueChange = {},
                     label = { Text("Tipo de Evento") },
                     readOnly = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -198,7 +206,7 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
 
             Button(
                 onClick = {
-                    val url = "tela-orcamento2/$data/$horario/$quantidade"
+                    val url = "tela-orcamento2/$evento/$data/$horario/$quantidade"
                     navController.navigate(url)
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -239,9 +247,22 @@ fun showDatePickerDialog(context: Context, onDateSelected: (String) -> Unit) {
     datePickerDialog.show()
 }
 
+fun showTimePickerDialog(context: Context, onTimeSelected: (String) -> Unit) {
+    val calendar = Calendar.getInstance()
+    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+    val minute = calendar.get(Calendar.MINUTE)
+
+    val timePickerDialog = TimePickerDialog(context, { _, hourOfDay, minuteOfHour ->
+        val selectedTime = String.format("%02d:%02d:00", hourOfDay, minuteOfHour)
+        onTimeSelected(selectedTime)
+    }, hour, minute, true)
+
+    timePickerDialog.show()
+}
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun OrcamentoPreview() {
+fun Orcamento() {
     val navController = rememberNavController()
     APITheme {
         Orcamento(navController = navController)

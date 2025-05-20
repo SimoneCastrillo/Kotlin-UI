@@ -79,7 +79,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
 
-            NavHost(navController = navController, startDestination = "tela-orcamento") {
+            NavHost(navController = navController, startDestination = "login") {
                 composable("login") {
                     Login("Android", navController = navController)
                 }
