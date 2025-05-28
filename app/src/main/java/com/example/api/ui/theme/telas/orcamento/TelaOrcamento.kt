@@ -33,6 +33,8 @@ import com.example.api.R
 import com.example.api.ui.theme.APITheme
 import androidx.compose.runtime.collectAsState
 import com.example.api.ui.theme.telas.orcamento.OrcamentoViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,6 +46,7 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
     val tiposEvento by viewModel.tiposEvento.collectAsState(emptyList())
 
     var evento by remember { mutableStateOf("") }
+    var eventoId by remember { mutableStateOf(0) }
     var expanded by remember { mutableStateOf(false) }
     var data by remember { mutableStateOf("Selecione a Data") }
     var horario by remember { mutableStateOf("Selecione o Horário") }
@@ -170,6 +173,7 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
                             DropdownMenuItem(
                                 onClick = {
                                     evento = tipo.nome
+                                    eventoId = tipo.id
                                     expanded = false
                                 },
                                 text = { Text(text = tipo.nome) }
@@ -206,7 +210,8 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
 
             Button(
                 onClick = {
-                    val url = "tela-orcamento2/$evento/$data/$horario/$quantidade"
+                    data = LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy")).toString()
+                    val url = "tela-orcamento2/$eventoId/$data/$horario/$quantidade"
                     navController.navigate(url)
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -240,7 +245,7 @@ fun showDatePickerDialog(context: Context, onDateSelected: (String) -> Unit) {
     val day = calendar.get(Calendar.DAY_OF_MONTH)
 
     val datePickerDialog = DatePickerDialog(context, { _, year, monthOfYear, dayOfMonth ->
-        val selectedDate = String.format("%04d-%02d-%02d", year, monthOfYear + 1, dayOfMonth)
+        val selectedDate = String.format("%02d/%02d/%04d", dayOfMonth, monthOfYear + 1, year)
         onDateSelected(selectedDate)
     }, year, month, day)
 

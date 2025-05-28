@@ -118,29 +118,37 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
                     .clickable { launcher.launch("image/*") },
                 contentAlignment = Alignment.Center
             ) {
-                val fotoUrl = usuario?.foto ?: "avatar_default"
-                val base64Image = usuario?.foto ?: ""
-                val imageBytes = android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT)
 
-                val imageBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-
-                if (fotoUrl != "avatar_default") {
-                    Image(
-                        bitmap = imageBitmap.asImageBitmap(),
-                        contentDescription = "Foto de Perfil",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(CircleShape) // Garante que a imagem seja cortada no formato circular
-                            .border(2.dp, Color.White, shape = CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
+                if (fotoPreviewUri != null) {
+                    // gerar um bigmap a partir do fotoPreviewUri
+                    // dai usar uma Image
                 } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.avatar), // Substitua pelo ID correto do avatar padrão
-                        contentDescription = "Avatar Padrão",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
+
+                    val fotoUrl = usuario?.foto ?: "avatar_default"
+                    val base64Image = usuario?.foto ?: ""
+                    val imageBytes =
+                        android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT)
+
+                    val imageBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+
+                    if (fotoUrl != "avatar_default") {
+                        Image(
+                            bitmap = imageBitmap.asImageBitmap(),
+                            contentDescription = "Foto de Perfil",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape) // Garante que a imagem seja cortada no formato circular
+                                .border(2.dp, Color.White, shape = CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.avatar), // Substitua pelo ID correto do avatar padrão
+                            contentDescription = "Avatar Padrão",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
             }
 
