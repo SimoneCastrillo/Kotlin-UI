@@ -36,6 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.components.MenuIcones
+import com.example.api.ui.theme.components.util.formatarData
 import com.example.api.ui.theme.telas.perfil.PerfilViewModel
 
 @Composable
@@ -140,8 +141,9 @@ fun TelaPaginaInicial(
                                 fontSize = 14.sp
                             )
                         }
+                        val dataFormatada = formatarData(orcamento?.dataEvento ?: "2000-01-01")
                         Text(
-                            text = "Data: ${orcamento.dataEvento}",
+                            text = "Data: ${dataFormatada}",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Light
                         )

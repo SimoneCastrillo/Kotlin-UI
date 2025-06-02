@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -58,7 +59,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.api.R
 import com.example.api.data.model.request.usuario.UsuarioCadastroRequest
 import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.components.TopoLogo
@@ -82,6 +82,9 @@ fun Cadastro2(
     var senhaConfirmacao by remember { mutableStateOf("") }
 
     var erro by remember { mutableStateOf<String?>(null) }
+
+    var erroEmail by remember { mutableStateOf<String?>(null) }
+    var erroSenha by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = modifier
@@ -108,33 +111,51 @@ fun Cadastro2(
                     )
                 }
 
-                // Campos de texto
+                // Campo Email
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
                     label = { Text("Insira seu e-mail") },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFFD9D9D9),
-                        unfocusedBorderColor = Color(0xFFD9D9D9)
+                        unfocusedBorderColor = Color(0xFFD9D9D9),
+                        focusedContainerColor = Color(0xFFF6F6F6),
+                        unfocusedContainerColor = Color(0xFFF6F6F6)
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                 )
 
+                // Campo Confirmação Email
                 OutlinedTextField(
                     value = emailConfirmacao,
                     onValueChange = { emailConfirmacao = it },
                     label = { Text("Confirme seu e-mail") },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFFD9D9D9),
-                        unfocusedBorderColor = Color(0xFFD9D9D9)
+                        unfocusedBorderColor = Color(0xFFD9D9D9),
+                        focusedContainerColor = Color(0xFFF6F6F6),
+                        unfocusedContainerColor = Color(0xFFF6F6F6)
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                 )
 
+                if (erroEmail != null) {
+                    Text(
+                        text = erroEmail!!,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp)
+                            .wrapContentWidth(Alignment.CenterHorizontally)
+                    )
+                }
+
+                // Campo Senha
                 OutlinedTextField(
                     value = senha,
                     onValueChange = { senha = it },
@@ -148,13 +169,16 @@ fun Cadastro2(
                     },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFFD9D9D9),
-                        unfocusedBorderColor = Color(0xFFD9D9D9)
+                        unfocusedBorderColor = Color(0xFFD9D9D9),
+                        focusedContainerColor = Color(0xFFF6F6F6),
+                        unfocusedContainerColor = Color(0xFFF6F6F6)
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                 )
 
+                // Campo Confirmação Senha
                 OutlinedTextField(
                     value = senhaConfirmacao,
                     onValueChange = { senhaConfirmacao = it },
@@ -168,37 +192,58 @@ fun Cadastro2(
                     },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color(0xFFD9D9D9),
-                        unfocusedBorderColor = Color(0xFFD9D9D9)
+                        unfocusedBorderColor = Color(0xFFD9D9D9),
+                        focusedContainerColor = Color(0xFFF6F6F6),
+                        unfocusedContainerColor = Color(0xFFF6F6F6)
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                 )
+                if (erroSenha != null) {
+                    Text(
+                        text = erroSenha!!,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp)
+                            .wrapContentWidth(Alignment.CenterHorizontally)
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
                 // Botão Cadastrar
                 Button(
                     onClick = {
-                        erro = null
+                        // Limpa erros anteriores
+                        erroEmail = null
+                        erroSenha = null
+
+                        var valido = true
 
                         if (email != emailConfirmacao) {
-                            erro = "Os e-mails não coincidem"
+                            erroEmail = "Os e-mails não coincidem"
+                            valido = false
                         }
 
                         if (senha != senhaConfirmacao) {
-                            erro = "As senhas não coincidem"
+                            erroSenha = "As senhas não coincidem"
+                            valido = false
                         }
 
-                        val usuario = UsuarioCadastroRequest(
-                            nome = nome,
-                            email = email,
-                            senha = senha,
-                            telefone = telefone
-                        )
-
-                        viewModel.cadastrarUsuario(usuario, navController)
+                        if (valido) {
+                            val usuario = UsuarioCadastroRequest(
+                                nome = nome,
+                                email = email,
+                                senha = senha,
+                                telefone = telefone
+                            )
+                            viewModel.cadastrarUsuario(usuario, navController)
+                        }
                     },
+
                     colors = ButtonDefaults.buttonColors(Color.Transparent),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -247,16 +292,4 @@ fun Cadastro2(
             }
         }
     }
-}
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun GreetingPreviewCadastro2() {
-//    val navController = rememberNavController()
-//
-//    APITheme {
-//        val backStackEntry = navController.getBackStackEntry("cadastro-2")
-//        Cadastro2("Android", navController = navController, backStackEntry =  NavBackStackEntry)
-//    }
 }
