@@ -69,7 +69,7 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
         }
     }
 
-    LaunchedEffect(key1 = id) {
+    LaunchedEffect(id) {
         viewModel.carregarPerfil(id, token)
     }
 
@@ -120,16 +120,29 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
             ) {
 
                 if (fotoPreviewUri != null) {
-                    // gerar um bigmap a partir do fotoPreviewUri
-                    // dai usar uma Image
-                } else {
+                    // Gerar um bitmap a partir do fotoPreviewUri
+                    val inputStream = context.contentResolver.openInputStream(fotoPreviewUri!!)
+                    val imageBitmap = BitmapFactory.decodeStream(inputStream)
+                    inputStream?.close()
 
+                    // Usar a Image para mostrar o bitmap
+                    Image(
+                        bitmap = imageBitmap.asImageBitmap(),
+                        contentDescription = "Foto de Perfil",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape)
+                            .border(2.dp, Color.White, shape = CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
                     val fotoUrl = usuario?.foto ?: "avatar_default"
                     val base64Image = usuario?.foto ?: ""
                     val imageBytes =
                         android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT)
 
-                    val imageBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                    val imageBitmap =
+                        BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
 
                     if (fotoUrl != "avatar_default") {
                         Image(
@@ -137,13 +150,13 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
                             contentDescription = "Foto de Perfil",
                             modifier = Modifier
                                 .fillMaxSize()
-                                .clip(CircleShape) // Garante que a imagem seja cortada no formato circular
+                                .clip(CircleShape)
                                 .border(2.dp, Color.White, shape = CircleShape),
                             contentScale = ContentScale.Crop
                         )
                     } else {
                         Image(
-                            painter = painterResource(id = R.drawable.avatar), // Substitua pelo ID correto do avatar padrão
+                            painter = painterResource(id = R.drawable.avatar),
                             contentDescription = "Avatar Padrão",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
@@ -269,8 +282,6 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
         }
     }
 }
-
-
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
