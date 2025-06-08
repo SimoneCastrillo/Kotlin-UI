@@ -1,5 +1,6 @@
 package com.example.api.ui.theme.telas.perfil
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -49,6 +50,7 @@ fun uriToMultipart(uri: Uri, context: Context): MultipartBody.Part? {
     return MultipartBody.Part.createFormData("foto", "foto.jpg", requestFile)
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun PerfilScreen(navController: NavController, id: Int, token: String) {
     val viewModel: PerfilViewModel = viewModel()
@@ -74,19 +76,52 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
     }
 
     LaunchedEffect(usuario) {
-        val user = usuario
-        if (user != null) {
+        usuario?.let { user ->
             nome = user.nome
             email = user.email
             celular = user.telefone
-            fotoPreviewUri = user.foto?.let { uri -> Uri.parse(uri) }
+            if (!user.foto.isNullOrBlank() && !user.foto.startsWith("/9j/")) {
+                fotoPreviewUri = Uri.parse(user.foto)
+            }
         }
     }
 
     val qtdOrcamentos = usuario?.qtdOrcamento?.toString() ?: "0"
-
     val erroMsg = viewModel.erroMsg
     val sucessoMsg = viewModel.sucessoMsg
+
+    val previewBitmap = remember(fotoPreviewUri) {
+        fotoPreviewUri?.let {
+            try {
+                context.contentResolver.openInputStream(it)?.use { stream ->
+                    BitmapFactory.decodeStream(stream)
+                }
+            } catch (e: Exception) {
+                Log.e("PerfilScreen", "Erro ao carregar URI", e)
+                null
+            }
+        }
+    }
+
+    val base64Bitmap = remember(usuario?.foto) {
+        val base64 = usuario?.foto
+        if (!base64.isNullOrBlank() && base64 != "avatar_default") {
+            try {
+                val cleanBase64 = base64
+                    .replace("data:image/png;base64,", "")
+                    .replace("data:image/jpeg;base64,", "")
+                    .replace("data:image/jpg;base64,", "")
+
+                Log.d("PerfilScreen", "Base64 length: ${cleanBase64.length}")
+
+                val bytes = android.util.Base64.decode(cleanBase64, android.util.Base64.DEFAULT)
+                BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            } catch (e: Exception) {
+                Log.e("PerfilScreen", "Erro ao decodificar base64", e)
+                null
+            }
+        } else null
+    }
 
     BoxWithConstraints {
         val maxWidthSize = maxWidth
@@ -95,12 +130,11 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Topo rosa com logo
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(if (maxWidthSize < 600.dp) 100.dp else 138.dp)
-                    .background(color = Color(0xFFC54477)),
+                    .background(Color(0xFFC54477)),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -114,50 +148,37 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
             Box(
                 modifier = Modifier
                     .size(100.dp)
-                    .border(2.dp, Color.White, shape = CircleShape)
-                    .clickable { launcher.launch("image/*") },
+                    .border(2.dp, Color.White, CircleShape)
+                    .clickable { launcher.launch("image/*", null) },
                 contentAlignment = Alignment.Center
             ) {
-
-                if (fotoPreviewUri != null) {
-                    // Gerar um bitmap a partir do fotoPreviewUri
-                    val inputStream = context.contentResolver.openInputStream(fotoPreviewUri!!)
-                    val imageBitmap = BitmapFactory.decodeStream(inputStream)
-                    inputStream?.close()
-
-                    // Usar a Image para mostrar o bitmap
-                    Image(
-                        bitmap = imageBitmap.asImageBitmap(),
-                        contentDescription = "Foto de Perfil",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(CircleShape)
-                            .border(2.dp, Color.White, shape = CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    val fotoUrl = usuario?.foto ?: "avatar_default"
-                    val base64Image = usuario?.foto ?: ""
-                    val imageBytes =
-                        android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT)
-
-                    val imageBitmap =
-                        BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-
-                    if (fotoUrl != "avatar_default") {
+                when {
+                    previewBitmap != null -> {
                         Image(
-                            bitmap = imageBitmap.asImageBitmap(),
-                            contentDescription = "Foto de Perfil",
+                            bitmap = previewBitmap.asImageBitmap(),
+                            contentDescription = "Foto selecionada",
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clip(CircleShape)
-                                .border(2.dp, Color.White, shape = CircleShape),
+                                .border(2.dp, Color.White, CircleShape),
                             contentScale = ContentScale.Crop
                         )
-                    } else {
+                    }
+                    base64Bitmap != null -> {
+                        Image(
+                            bitmap = base64Bitmap.asImageBitmap(),
+                            contentDescription = "Foto do servidor",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                                .border(2.dp, Color.White, CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    else -> {
                         Image(
                             painter = painterResource(id = R.drawable.avatar),
-                            contentDescription = "Avatar Padrão",
+                            contentDescription = "Avatar padrão",
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
@@ -219,30 +240,21 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
+                readOnly = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFFC54477),
                     unfocusedBorderColor = Color.Gray
-                ),
-                readOnly = true
+                )
             )
 
-            // Mensagens
             erroMsg?.let {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = it,
-                    color = Color.Red,
-                    style = TextStyle(fontSize = 14.sp)
-                )
+                Text(it, color = Color.Red, style = TextStyle(fontSize = 14.sp))
             }
 
             sucessoMsg?.let {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = it,
-                    color = Color(0xFF2E7D32),
-                    style = TextStyle(fontSize = 14.sp)
-                )
+                Text(it, color = Color(0xFF2E7D32), style = TextStyle(fontSize = 14.sp))
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -251,16 +263,12 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
                 onClick = {
                     coroutineScope.launch {
                         val fotoPart = fotoPreviewUri?.let { uriToMultipart(it, context) }
-
                         val request = UsuarioUpdateRequest(
                             nome = nome,
                             email = email,
                             telefone = celular,
-                            foto = null  // Vamos ignorar a foto aqui, já que estamos passando via Multipart
+                            foto = null
                         )
-
-                        Log.d("Base64", "Foto Base64: ${request.foto}")
-
                         viewModel.salvarPerfil(id, request, token, fotoPart)
                     }
                 },

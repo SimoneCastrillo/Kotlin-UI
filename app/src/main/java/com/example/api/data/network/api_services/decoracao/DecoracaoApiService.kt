@@ -7,6 +7,6 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface DecoracaoApiService {
-    @GET("decoracoes/tipo-de-evento")
+    @GET("api/decoracoes/tipo-de-evento")
     suspend fun getDecoracoesPorTipo(@Query("tipoEventoId") tipoEventoId: Int): List<DecoracaoResponse>?
 }
