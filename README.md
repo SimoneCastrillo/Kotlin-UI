@@ -12,7 +12,6 @@ Este repositório contém os arquivos e configurações para construção de int
 ## 🚀 Tecnologias Utilizadas  
 - **Kotlin**: Linguagem principal para desenvolvimento Android.  
 - **Jetpack Compose**: Framework moderno para construção de UI declarativa.  
-- **Material Design**: Diretrizes para um design consistente e intuitivo.  
 
 ## 🔧 Como Usar  
 1. Clone o repositório:  
