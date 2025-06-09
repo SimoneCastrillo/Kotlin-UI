@@ -110,7 +110,8 @@ fun PerfilScreen(navController: NavController, id: Int, token: String) {
                     contentScale = ContentScale.Fit
                 )
             }
-
+            Spacer(modifier = Modifier.height(16.dp))
+            // Foto de perfil
             Box(
                 modifier = Modifier
                     .size(100.dp)
