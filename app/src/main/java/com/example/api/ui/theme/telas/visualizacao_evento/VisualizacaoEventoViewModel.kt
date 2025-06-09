@@ -98,7 +98,9 @@ class VisualizacaoEventoViewModel : ViewModel() {
             sugestao = orcamentoAtual.sugestao,
             tipoEventoId = orcamentoAtual.tipoEvento.id,
             usuarioId = orcamentoAtual.usuario.id,
-            decoracaoId = decoracaoIdSelecionada
+            decoracaoId = decoracaoIdSelecionada,
+            buffetId = orcamentoAtual.buffet.id,
+            enderecoId = orcamentoAtual.endereco.id
         )
 
         println("Data: $novaData")

@@ -232,7 +232,7 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
                     color = Color.Gray,
                     textAlign = TextAlign.Center
                 ),
-                modifier = Modifier.clickable { /* Implementar ação de cancelar */ }
+                modifier = Modifier.clickable {  navController.popBackStack() }
             )
         }
     }

@@ -7,5 +7,8 @@ data class OrcamentoRequest(
     val sugestao: String?,
     val tipoEventoId: Int,
     val usuarioId: Int,
-    val decoracaoId: Int?
+    val decoracaoId: Int?,
+    val buffetId: Int,
+    val enderecoId: Int
 )
+

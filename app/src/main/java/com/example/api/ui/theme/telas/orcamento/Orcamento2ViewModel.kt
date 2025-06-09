@@ -38,7 +38,8 @@ class Orcamento2ViewModel() : ViewModel() {
     var sugestao: String? = null
     var decoracaoId: Int? = null
     val usuarioId = SessaoUsuario.usuarioId ?: 0
-
+    var buffedId: Int = 0
+    var enderecoId: Int = 0
 
     private val _decoracoes = MutableStateFlow<List<DecoracaoResponse>>(emptyList())
     val decoracoes: StateFlow<List<DecoracaoResponse>> = _decoracoes
@@ -120,7 +121,9 @@ class Orcamento2ViewModel() : ViewModel() {
         quantidade: Int,
         tipoEventoId: Int,
         sugestao: String?,
-        decoracaoId: Int?
+        decoracaoId: Int?,
+        buffedId: Int,
+        enderecoId: Int
     ) {
         this.dataEvento = data
         this.horario = horario
@@ -128,5 +131,7 @@ class Orcamento2ViewModel() : ViewModel() {
         this.tipoEventoId = tipoEventoId
         this.sugestao = sugestao
         this.decoracaoId = decoracaoId
+        this.buffedId = buffedId
+        this.enderecoId = enderecoId
     }
 }

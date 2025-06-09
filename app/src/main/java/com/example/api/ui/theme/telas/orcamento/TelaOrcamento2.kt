@@ -40,6 +40,7 @@ import com.example.api.R
 import com.example.api.data.model.request.orcamento.OrcamentoRequest
 import com.example.api.data.session.SessaoUsuario
 import com.example.api.ui.theme.components.util.LoadingDialog
+import com.example.api.ui.theme.utils.abrirWhatsApp
 
 @Composable
 fun Orcamento2Screen(
@@ -176,7 +177,9 @@ fun Orcamento2Screen(
                         quantidade = quantidadeRecebida,
                         tipoEventoId = tipoEventoId ?: 0,
                         sugestao = observacao.takeIf { it.isNotBlank() },
-                        decoracaoId = decoracaoSelecionadaId
+                        decoracaoId = decoracaoSelecionadaId,
+                        buffedId = 1,
+                        enderecoId = 1
                     )
 
                     val orcamentoRequest = OrcamentoRequest(
@@ -186,19 +189,21 @@ fun Orcamento2Screen(
                         tipoEventoId = viewModelTela2.tipoEventoId,
                         usuarioId = viewModelTela2.usuarioId,
                         sugestao = viewModelTela2.sugestao,
-                        decoracaoId = viewModelTela2.decoracaoId
+                        decoracaoId = viewModelTela2.decoracaoId,
+                        enderecoId = 1,
+                        buffetId = 1
                     )
 
+
                     viewModelTela2.cadastrarOrcamento(orcamentoRequest, navController)
-                    println("Finalizar Orçamento:")
-                    println("Tipo Evento ID: $tipoEventoIdFinal")
-                    println("Data: $dataEvento")
-                    println("User:" + viewModelTela2.usuarioId)
-                    println("Token:" + SessaoUsuario.token)
-                    println("Horário: $inicio")
-                    println("Quantidade: $qtdConvidados")
-                    println("Decoração ID: $decoracaoIdFinal")
-                    println("Observação: $observacaoFinal")
+
+
+
+                    abrirWhatsApp(
+                        context = context,
+                        numero = "5511953311150", // DDD + número sem + ou traços
+                        mensagem = "Olá, gostaria de saber mais sobre o serviço!"
+                    )
                 },
                 enabled = !viewModelTela2.isLoading,
                 modifier = Modifier.fillMaxWidth(),

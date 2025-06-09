@@ -10,7 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
-    private const val BASE_URL = "http://3.93.65.234/"
+    private const val BASE_URL = "http://54.159.92.206/"
 
     private val clienteHttp: OkHttpClient by lazy {
         val interceptor = HttpLoggingInterceptor()

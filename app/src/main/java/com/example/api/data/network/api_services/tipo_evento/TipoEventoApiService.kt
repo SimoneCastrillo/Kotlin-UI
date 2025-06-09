@@ -2,8 +2,11 @@ package com.example.api.data.network.api_services.tipo_evento
 
 import com.example.api.data.model.response.tipo_evento.TipoEventoResponse
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface TipoEventoApiService {
     @GET("api/tipos-evento")
-    suspend fun getTiposEvento(): List<TipoEventoResponse>
+    suspend fun getTiposEvento(
+        @Query("buffetId") buffetId: Int = 1
+    ): List<TipoEventoResponse>
 }
