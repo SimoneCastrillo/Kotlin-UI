@@ -10,12 +10,14 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -57,7 +59,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.api.R
 import com.example.api.data.model.request.usuario.UsuarioCadastroRequest
 import com.example.api.ui.theme.APITheme
 import com.example.api.ui.theme.components.TopoLogo
@@ -75,7 +76,6 @@ fun Cadastro2(
     var passwordVisible by remember { mutableStateOf(false) }
     var passwordConfirmationVisible by remember { mutableStateOf(false) }
 
-
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
     var emailConfirmacao by remember { mutableStateOf("") }
@@ -83,19 +83,23 @@ fun Cadastro2(
 
     var erro by remember { mutableStateOf<String?>(null) }
 
-    Column {
-       TopoLogo()
+    var erroEmail by remember { mutableStateOf<String?>(null) }
+    var erroSenha by remember { mutableStateOf<String?>(null) }
+
+    Column(
+        modifier = modifier
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState())
+    ) {
+        TopoLogo()
 
         Box(
             modifier = Modifier
-                .width(412.dp)
-                .height(543.dp)
-                .padding(start = 64.dp, top = 32.dp, end = 64.dp, bottom = 64.dp)
+                .padding(horizontal = 64.dp, vertical = 32.dp)
+                .fillMaxSize()
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                modifier = Modifier.fillMaxSize()
             ) {
 
                 erro?.let {
@@ -107,168 +111,168 @@ fun Cadastro2(
                     )
                 }
 
-                Box {
+                // Campo Email
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Insira seu e-mail") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFD9D9D9),
+                        unfocusedBorderColor = Color(0xFFD9D9D9),
+                        focusedContainerColor = Color(0xFFF6F6F6),
+                        unfocusedContainerColor = Color(0xFFF6F6F6)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                )
 
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .padding(top = 8.dp)
-                            .background(Color(0x33D9D9D9))
-                    )
+                // Campo Confirmação Email
+                OutlinedTextField(
+                    value = emailConfirmacao,
+                    onValueChange = { emailConfirmacao = it },
+                    label = { Text("Confirme seu e-mail") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFD9D9D9),
+                        unfocusedBorderColor = Color(0xFFD9D9D9),
+                        focusedContainerColor = Color(0xFFF6F6F6),
+                        unfocusedContainerColor = Color(0xFFF6F6F6)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                )
 
-                    OutlinedTextField(
-                        value = email,
-                        onValueChange = { email = it },
-                        singleLine = true,
-                        label = { Text(stringResource(R.string.insira_seu_email)) },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFFD9D9D9),
-                            unfocusedBorderColor = Color(0xFFD9D9D9)
-                        )
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(28.dp))
-
-                Box {
-
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .padding(top = 8.dp)
-                            .background(Color(0x33D9D9D9))
-                    )
-
-                    OutlinedTextField(
-                        value = emailConfirmacao,
-                        onValueChange = { emailConfirmacao = it },
-                        singleLine = true,
-                        label = { Text(stringResource(R.string.confirme_seu_email)) },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFFD9D9D9),
-                            unfocusedBorderColor = Color(0xFFD9D9D9)
-                        )
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(28.dp))
-
-                Box {
-
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .padding(top = 8.dp)
-                            .background(Color(0x33D9D9D9))
-                    )
-
-                    OutlinedTextField(
-                        value = senha,
-                        onValueChange = { senha = it },
-                        label = { Text(stringResource(R.string.insira_sua_senha)) },
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        trailingIcon = {
-                            val icon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(imageVector = icon, contentDescription = null)
-                            }
-                        },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFFD9D9D9),
-                            unfocusedBorderColor = Color(0xFFD9D9D9)
-                        )
+                if (erroEmail != null) {
+                    Text(
+                        text = erroEmail!!,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp)
+                            .wrapContentWidth(Alignment.CenterHorizontally)
                     )
                 }
 
-                Spacer(modifier = Modifier.height(28.dp))
+                // Campo Senha
+                OutlinedTextField(
+                    value = senha,
+                    onValueChange = { senha = it },
+                    label = { Text("Insira sua senha") },
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        val icon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(imageVector = icon, contentDescription = null)
+                        }
+                    },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFD9D9D9),
+                        unfocusedBorderColor = Color(0xFFD9D9D9),
+                        focusedContainerColor = Color(0xFFF6F6F6),
+                        unfocusedContainerColor = Color(0xFFF6F6F6)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                )
 
-                Box {
-
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .padding(top = 8.dp)
-                            .background(Color(0x33D9D9D9))
-                    )
-
-                    OutlinedTextField(
-                        value = senhaConfirmacao,
-                        onValueChange = { senhaConfirmacao = it },
-                        label = { Text(stringResource(R.string.confirme_sua_senha)) },
-                        visualTransformation = if (passwordConfirmationVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        trailingIcon = {
-                            val icon = if (passwordConfirmationVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                            IconButton(onClick = { passwordConfirmationVisible = !passwordConfirmationVisible }) {
-                                Icon(imageVector = icon, contentDescription = null)
-                            }
-                        },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFFD9D9D9),
-                            unfocusedBorderColor = Color(0xFFD9D9D9)
-                        )
+                // Campo Confirmação Senha
+                OutlinedTextField(
+                    value = senhaConfirmacao,
+                    onValueChange = { senhaConfirmacao = it },
+                    label = { Text("Confirme sua senha") },
+                    visualTransformation = if (passwordConfirmationVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        val icon = if (passwordConfirmationVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                        IconButton(onClick = { passwordConfirmationVisible = !passwordConfirmationVisible }) {
+                            Icon(imageVector = icon, contentDescription = null)
+                        }
+                    },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFD9D9D9),
+                        unfocusedBorderColor = Color(0xFFD9D9D9),
+                        focusedContainerColor = Color(0xFFF6F6F6),
+                        unfocusedContainerColor = Color(0xFFF6F6F6)
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                )
+                if (erroSenha != null) {
+                    Text(
+                        text = erroSenha!!,
+                        color = Color.Red,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp)
+                            .wrapContentWidth(Alignment.CenterHorizontally)
                     )
                 }
 
-                Spacer(modifier = Modifier.height(31.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(40.dp)
-                ){
-                    Button(
-                        onClick = {
-                            erro = null
+                // Botão Cadastrar
+                Button(
+                    onClick = {
+                        // Limpa erros anteriores
+                        erroEmail = null
+                        erroSenha = null
 
-                            if (email != emailConfirmacao) {
-                                erro = "Os e-mails não coincidem"
-                            }
+                        var valido = true
 
-                            if (senha != senhaConfirmacao) {
-                                erro = "As senhas não coincidem"
-                            }
+                        if (email != emailConfirmacao) {
+                            erroEmail = "Os e-mails não coincidem"
+                            valido = false
+                        }
 
+                        if (senha != senhaConfirmacao) {
+                            erroSenha = "As senhas não coincidem"
+                            valido = false
+                        }
+
+                        if (valido) {
                             val usuario = UsuarioCadastroRequest(
                                 nome = nome,
                                 email = email,
                                 senha = senha,
                                 telefone = telefone
                             )
-
                             viewModel.cadastrarUsuario(usuario, navController)
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            Color.Transparent,
-                        ),
-                        modifier = Modifier
-                            .width(412.dp)
-                            .height(40.dp)
-                            .background(color = Color(0xFFC54477), shape = RoundedCornerShape(size = 16.dp))
-                    ){
-                        Text(
-                            text = "Cadastrar",
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight(800),
-                                color = Color.White,
-                                textAlign = TextAlign.Center,
-                            )
+                        }
+                    },
+
+                    colors = ButtonDefaults.buttonColors(Color.Transparent),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .background(color = Color(0xFFC54477), shape = RoundedCornerShape(size = 16.dp))
+                ) {
+                    Text(
+                        text = "Cadastrar",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight(800),
+                            color = Color.White,
+                            textAlign = TextAlign.Center
                         )
-                    }
+                    )
                 }
 
-//                Spacer(modifier = Modifier.weight(1f))
-                  Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-
+                // Texto de rodapé (Login)
                 Box(
                     modifier = Modifier
-                        .width(284.dp)
-                        .height(13.dp)
-                ){
+                        .fillMaxWidth()
+                        .height(40.dp)
+                ) {
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable{
+                            .clickable {
                                 navController.navigate("login")
                             },
                         text = buildAnnotatedString {
@@ -281,22 +285,11 @@ fun Cadastro2(
                             fontSize = 11.sp,
                             fontWeight = FontWeight(400),
                             color = Color(0xFF000000),
-                            textAlign = TextAlign.Center,
+                            textAlign = TextAlign.Center
                         )
                     )
                 }
             }
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun GreetingPreviewCadastro2() {
-//    val navController = rememberNavController()
-//
-//    APITheme {
-//        val backStackEntry = navController.getBackStackEntry("cadastro-2")
-//        Cadastro2("Android", navController = navController, backStackEntry =  NavBackStackEntry)
-//    }
 }
