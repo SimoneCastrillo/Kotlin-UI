@@ -41,6 +41,7 @@ import com.example.api.data.model.request.orcamento.OrcamentoRequest
 import com.example.api.data.session.SessaoUsuario
 import com.example.api.ui.theme.components.util.LoadingDialog
 import com.example.api.ui.theme.utils.abrirWhatsApp
+import com.example.api.ui.theme.utils.gerarMensagemWhatsApp
 
 @Composable
 fun Orcamento2Screen(
@@ -74,6 +75,16 @@ fun Orcamento2Screen(
 
     val decoracoes by viewModelTela2.decoracoes.collectAsState()
     val decoracaoSelecionadaId by viewModelTela2.decoracaoSelecionadaId.collectAsState()
+
+    LaunchedEffect(tipoEventoId, decoracaoSelecionadaId) {
+        tipoEventoId?.let {
+            viewModelTela2.buscarNomeTipoEvento(it)
+        }
+
+        decoracaoSelecionadaId?.let {
+            viewModelTela2.buscarNomeDecoracao(it)
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -194,15 +205,24 @@ fun Orcamento2Screen(
                         buffetId = 1
                     )
 
-
                     viewModelTela2.cadastrarOrcamento(orcamentoRequest, navController)
 
+                    val nomeUsuario = SessaoUsuario.nome ?: "Cliente"
 
+                    val mensagem = gerarMensagemWhatsApp(
+                        nomeUsuario = nomeUsuario,
+                        dataEvento = viewModelTela2.dataEvento,
+                        horario = viewModelTela2.horario,
+                        qtdConvidados = viewModelTela2.qtdConvidados,
+                        tipoEventoNome = viewModelTela2.nomeTipoEvento,
+                        decoracaoNome = viewModelTela2.nomeDecoracao,
+                        sugestao = viewModelTela2.sugestao
+                    )
 
                     abrirWhatsApp(
                         context = context,
-                        numero = "5511953311150", // DDD + número sem + ou traços
-                        mensagem = "Olá, gostaria de saber mais sobre o serviço!"
+                        numero = "5511986090189",
+                        mensagem = mensagem
                     )
                 },
                 enabled = !viewModelTela2.isLoading,

@@ -12,4 +12,8 @@ class DecoracaoRepository {
 
         return response
     }
+
+    suspend fun buscarPorId(id: Int): DecoracaoResponse {
+        return decoracaoApiService.getDecoracaoPorId(id)
+    }
 }
