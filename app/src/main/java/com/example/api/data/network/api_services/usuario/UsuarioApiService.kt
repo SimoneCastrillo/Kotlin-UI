@@ -17,17 +17,17 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface UsuarioApiService {
-    @POST("usuarios/login")
+    @POST("api/usuarios/login/1")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
-    @GET("usuarios/{id}")
+    @GET("api/usuarios/{id}")
     suspend fun getUsuarioPorId(
         @Path("id") id: Int,
         @Header("Authorization") token: String
     ): Response<LoginResponse>
 
     @Multipart
-    @PATCH("usuarios/{id}")
+    @PATCH("api/usuarios/{id}")
     suspend fun atualizarPerfil(
         @Path("id") id: Int,
         @Part("nome") nome: RequestBody,
@@ -37,7 +37,7 @@ interface UsuarioApiService {
         @Header("Authorization") token: String
     )
 
-    @POST("usuarios")
+    @POST("api/usuarios/1")
     suspend fun cadastrarUsuario(
         @Body usuario: UsuarioCadastroRequest
     ): Response<UsuarioCadastroResponse>

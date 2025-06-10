@@ -11,25 +11,25 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface OrcamentoApiService {
-    @GET("orcamentos/usuario/{id}")
+    @GET("api/orcamentos/usuario/{id}")
     suspend fun getOrcamentosPorUsuario(
         @Path("id") id: Int,
         @Header("Authorization") token: String
     ): Response<List<OrcamentoResponse>>
 
-    @GET("orcamentos/{id}")
+    @GET("api/orcamentos/{id}")
     suspend fun getOrcamentoPorId(
         @Path("id") id: Int,
         @Header("Authorization") token: String
     ): Response<OrcamentoResponse>
 
-    @POST("orcamentos")
+    @POST("api/orcamentos")
     suspend fun cadastrarOrcamento(
         @Body orcamento: OrcamentoRequest,
         @Header("Authorization") token: String
     ): Response<OrcamentoResponse>
 
-    @PUT("/orcamentos/{id}")
+    @PUT("api/orcamentos/{id}")
     suspend fun atualizarOrcamento(
         @Path("id") id: Int,
         @Body request: OrcamentoRequest,

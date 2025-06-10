@@ -40,6 +40,8 @@ import com.example.api.R
 import com.example.api.data.model.request.orcamento.OrcamentoRequest
 import com.example.api.data.session.SessaoUsuario
 import com.example.api.ui.theme.components.util.LoadingDialog
+import com.example.api.ui.theme.utils.abrirWhatsApp
+import com.example.api.ui.theme.utils.gerarMensagemWhatsApp
 
 @Composable
 fun Orcamento2Screen(
@@ -73,6 +75,16 @@ fun Orcamento2Screen(
 
     val decoracoes by viewModelTela2.decoracoes.collectAsState()
     val decoracaoSelecionadaId by viewModelTela2.decoracaoSelecionadaId.collectAsState()
+
+    LaunchedEffect(tipoEventoId, decoracaoSelecionadaId) {
+        tipoEventoId?.let {
+            viewModelTela2.buscarNomeTipoEvento(it)
+        }
+
+        decoracaoSelecionadaId?.let {
+            viewModelTela2.buscarNomeDecoracao(it)
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -176,7 +188,9 @@ fun Orcamento2Screen(
                         quantidade = quantidadeRecebida,
                         tipoEventoId = tipoEventoId ?: 0,
                         sugestao = observacao.takeIf { it.isNotBlank() },
-                        decoracaoId = decoracaoSelecionadaId
+                        decoracaoId = decoracaoSelecionadaId,
+                        buffedId = 1,
+                        enderecoId = 1
                     )
 
                     val orcamentoRequest = OrcamentoRequest(
@@ -186,19 +200,30 @@ fun Orcamento2Screen(
                         tipoEventoId = viewModelTela2.tipoEventoId,
                         usuarioId = viewModelTela2.usuarioId,
                         sugestao = viewModelTela2.sugestao,
-                        decoracaoId = viewModelTela2.decoracaoId
+                        decoracaoId = viewModelTela2.decoracaoId,
+                        enderecoId = 1,
+                        buffetId = 1
                     )
 
                     viewModelTela2.cadastrarOrcamento(orcamentoRequest, navController)
-                    println("Finalizar Orçamento:")
-                    println("Tipo Evento ID: $tipoEventoIdFinal")
-                    println("Data: $dataEvento")
-                    println("User:" + viewModelTela2.usuarioId)
-                    println("Token:" + SessaoUsuario.token)
-                    println("Horário: $inicio")
-                    println("Quantidade: $qtdConvidados")
-                    println("Decoração ID: $decoracaoIdFinal")
-                    println("Observação: $observacaoFinal")
+
+                    val nomeUsuario = SessaoUsuario.nome ?: "Cliente"
+
+                    val mensagem = gerarMensagemWhatsApp(
+                        nomeUsuario = nomeUsuario,
+                        dataEvento = viewModelTela2.dataEvento,
+                        horario = viewModelTela2.horario,
+                        qtdConvidados = viewModelTela2.qtdConvidados,
+                        tipoEventoNome = viewModelTela2.nomeTipoEvento,
+                        decoracaoNome = viewModelTela2.nomeDecoracao,
+                        sugestao = viewModelTela2.sugestao
+                    )
+
+                    abrirWhatsApp(
+                        context = context,
+                        numero = "5511986090189",
+                        mensagem = mensagem
+                    )
                 },
                 enabled = !viewModelTela2.isLoading,
                 modifier = Modifier.fillMaxWidth(),

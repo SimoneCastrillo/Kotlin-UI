@@ -1,5 +1,6 @@
-package com.example.api.ui.theme.telas.orcamento
-
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -30,22 +32,27 @@ import androidx.navigation.compose.rememberNavController
 import com.example.api.R
 import com.example.api.ui.theme.APITheme
 import androidx.compose.runtime.collectAsState
+import com.example.api.ui.theme.telas.orcamento.OrcamentoViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
-import com.example.api.ui.theme.telas.login.Login
-import kotlinx.coroutines.flow.forEach
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
     val viewModel = OrcamentoViewModel()
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
-    val tiposEvento by viewModel.tiposEvento.collectAsState(emptyList()) // Coleta os tipos de evento da ViewModel
+    val tiposEvento by viewModel.tiposEvento.collectAsState(emptyList())
 
-    var evento by remember { mutableStateOf("") } // Estado para o evento selecionado
-    var expanded by remember { mutableStateOf(false) } // E
-    val data = remember { mutableStateOf("01 de Maio de 2025") }
-    val horario = remember { mutableStateOf("16:30") }
-    val quantidade = remember { mutableStateOf("140") }
+    var evento by remember { mutableStateOf("") }
+    var eventoId by remember { mutableStateOf(0) }
+    var expanded by remember { mutableStateOf(false) }
+    var data by remember { mutableStateOf("Selecione a Data") }
+    var horario by remember { mutableStateOf("Selecione o Horário") }
+    var quantidade by remember { mutableStateOf("140") }
+
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.carregarTiposEvento()
@@ -54,24 +61,22 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
     Column {
         Column(
             modifier = Modifier
-                .fillMaxWidth() // Ajusta a largura para o máximo na tela
+                .fillMaxWidth()
                 .height(138.dp)
                 .background(color = Color(0xFFC54477), shape = RoundedCornerShape(0.dp))
-                .padding(start = 16.dp, top = 32.dp, end = 16.dp, bottom = 32.dp), // Use padding ao invés de alinhamento fixo
+                .padding(start = 16.dp, top = 32.dp, end = 16.dp, bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
             Box(
                 modifier = Modifier
-                    .width((screenWidth * 0.25f)) // Ajuste baseado em porcentagem da largura da tela
+                    .width((screenWidth * 0.25f))
                     .height(36.dp)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.logo_branco),
                     contentDescription = "Descrição da Imagem",
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit
                 )
             }
@@ -85,7 +90,6 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Título
             Text(
                 text = "Orçamento",
                 style = TextStyle(
@@ -109,24 +113,19 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            var data by remember { mutableStateOf("2025-04-27") }
-            var horario by remember { mutableStateOf("16:30:00") }
-            var quantidade by remember { mutableStateOf("140") }
-            var evento by remember { mutableStateOf("Selecione o tipo de evento") }
-            var eventoId by remember { mutableStateOf<Int?>(null) }
-
             OutlinedTextField(
                 value = data,
-                onValueChange = { data = it },
+                onValueChange = {},
                 label = { Text("Data") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Gray,
-                    focusedBorderColor = Color(0xFFD9D9D9),
-                    unfocusedBorderColor = Color(0xFFD9D9D9),
-                    disabledBorderColor = Color.Gray,
-                    errorBorderColor = Color.Red
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        showDatePickerDialog(context) { selectedDate -> data = selectedDate }
+                    },
+                readOnly = true,
+                enabled = false,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    disabledTextColor = Color.Black
                 )
             )
 
@@ -134,16 +133,17 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
 
             OutlinedTextField(
                 value = horario,
-                onValueChange = { horario = it },
+                onValueChange = {},
                 label = { Text("Horário") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Gray,
-                    focusedBorderColor = Color(0xFFD9D9D9),
-                    unfocusedBorderColor = Color(0xFFD9D9D9),
-                    disabledBorderColor = Color.Gray,
-                    errorBorderColor = Color.Red
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        showTimePickerDialog(context) { selectedTime -> horario = selectedTime }
+                    },
+                readOnly = true,
+                enabled = false,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    disabledTextColor = Color.Black
                 )
             )
 
@@ -152,7 +152,7 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
             Box {
                 OutlinedTextField(
                     value = evento,
-                    onValueChange = { /* Não deve ser editável diretamente */ },
+                    onValueChange = {},
                     label = { Text("Tipo de Evento") },
                     readOnly = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -173,10 +173,8 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
                             DropdownMenuItem(
                                 onClick = {
                                     evento = tipo.nome
-                                    eventoId = tipo.id// Atualiza o nome do evento selecionado
-                                    expanded = false // Fecha o menu
-                                    // Aqui você pode fazer algo com o 'tipo' selecionado,
-                                    // como atualizar um estado que guarda o objeto TipoEvento completo.
+                                    eventoId = tipo.id
+                                    expanded = false
                                 },
                                 text = { Text(text = tipo.nome) }
                             )
@@ -212,8 +210,8 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
 
             Button(
                 onClick = {
+                    data = LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy")).toString()
                     val url = "tela-orcamento2/$eventoId/$data/$horario/$quantidade"
-
                     navController.navigate(url)
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -234,61 +232,43 @@ fun Orcamento(modifier: Modifier = Modifier, navController: NavController) {
                     color = Color.Gray,
                     textAlign = TextAlign.Center
                 ),
-                modifier = Modifier.clickable { /* Implementar ação de cancelar */ }
+                modifier = Modifier.clickable {  navController.popBackStack() }
             )
         }
     }
 }
 
-//@Composable
-//fun TipoEventoDropdown(viewModel: OrcamentoViewModel) {
-//    val expanded = remember { mutableStateOf(false) }
-//
-//    LaunchedEffect(Unit) {
-//        viewModel.carregarTiposEvento()
-//    }
-//
-//    Box {
-//        OutlinedTextField(
-//            value = viewModel.eventoSelecionadoNome,
-//            onValueChange = {},
-//            label = { Text("Evento") },
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .clickable { expanded.value = true },
-//            readOnly = true
-//        )
-//
-//        DropdownMenu(
-//            expanded = expanded.value,
-//            onDismissRequest = { expanded.value = false }
-//        ) {
-//            if (tiposEvento.isNotEmpty()) {
-//                tiposEvento.forEach { tipo ->
-//                    // Para cada tipo de evento, cria-se um item no menu
-//                    DropdownMenuItem(
-//                        onClick = {
-//                            evento = tipo.nome // Atualiza o evento selecionado
-//                            expanded = false // Fecha o menu
-//                        },
-//                        text = { Text(text = tipo.nome) }
-//                    )
-//                }
-//            } else {
-//                // Caso a lista esteja vazia, exibe uma mensagem
-//                DropdownMenuItem(
-//                    onClick = {},
-//                    text = { Text(text = "Nenhum evento disponível") }
-//                )
-//            }
-//        }
-//    }
-//}
+fun showDatePickerDialog(context: Context, onDateSelected: (String) -> Unit) {
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    val datePickerDialog = DatePickerDialog(context, { _, year, monthOfYear, dayOfMonth ->
+        val selectedDate = String.format("%02d/%02d/%04d", dayOfMonth, monthOfYear + 1, year)
+        onDateSelected(selectedDate)
+    }, year, month, day)
+
+    datePickerDialog.show()
+}
+
+fun showTimePickerDialog(context: Context, onTimeSelected: (String) -> Unit) {
+    val calendar = Calendar.getInstance()
+    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+    val minute = calendar.get(Calendar.MINUTE)
+
+    val timePickerDialog = TimePickerDialog(context, { _, hourOfDay, minuteOfHour ->
+        val selectedTime = String.format("%02d:%02d:00", hourOfDay, minuteOfHour)
+        onTimeSelected(selectedTime)
+    }, hour, minute, true)
+
+    timePickerDialog.show()
+}
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun OrcamentoPreview() {
-    val navController = rememberNavController();
+fun Orcamento() {
+    val navController = rememberNavController()
     APITheme {
         Orcamento(navController = navController)
     }

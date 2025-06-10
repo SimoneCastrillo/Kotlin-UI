@@ -37,6 +37,7 @@ class LoginViewModel : ViewModel() {
                 usuarioLogado = it
                 SessaoUsuario.usuarioId = it.id
                 SessaoUsuario.token = it.token
+                SessaoUsuario.nome = it.nome
             }.onFailure {
                 erroMsg = it.message
             }

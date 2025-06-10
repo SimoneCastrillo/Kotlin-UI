@@ -17,8 +17,8 @@ data class OrcamentoResponse(
     val usuario: Usuario,
     val tipoEvento: TipoEvento,
     val decoracao: Decoracao?,
-//    val buffet: Buffet,
-//    val endereco: Endereco
+    val buffet: Buffet,
+   val endereco: Endereco
 )
 
 data class TipoEvento(

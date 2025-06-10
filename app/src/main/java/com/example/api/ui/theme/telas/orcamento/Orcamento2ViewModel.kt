@@ -12,6 +12,7 @@ import com.example.api.data.model.response.decoracao.DecoracaoResponse
 import com.example.api.data.model.response.orcamento.OrcamentoResponse
 import com.example.api.data.repository.decoracao.DecoracaoRepository
 import com.example.api.data.repository.orcamento.OrcamentoRepository
+import com.example.api.data.repository.tipo_evento.TipoEventoRepository
 import com.example.api.data.session.SessaoUsuario
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,7 +39,8 @@ class Orcamento2ViewModel() : ViewModel() {
     var sugestao: String? = null
     var decoracaoId: Int? = null
     val usuarioId = SessaoUsuario.usuarioId ?: 0
-
+    var buffedId: Int = 0
+    var enderecoId: Int = 0
 
     private val _decoracoes = MutableStateFlow<List<DecoracaoResponse>>(emptyList())
     val decoracoes: StateFlow<List<DecoracaoResponse>> = _decoracoes
@@ -46,9 +48,39 @@ class Orcamento2ViewModel() : ViewModel() {
     private val _decoracaoSelecionadaId = MutableStateFlow<Int?>(null)
     val decoracaoSelecionadaId: StateFlow<Int?> = _decoracaoSelecionadaId
 
+    var nomeDecoracao by mutableStateOf<String?>(null)
+        private set
+
+    var nomeTipoEvento by mutableStateOf<String?>(null)
+        private set
+
+
     fun selecionarDecoracao(id: Int?) {
         _decoracaoSelecionadaId.value = id
     }
+
+    fun buscarNomeDecoracao(id: Int) {
+        viewModelScope.launch {
+            try {
+                val nome = DecoracaoRepository().buscarPorId(id).nome
+                nomeDecoracao = nome
+            } catch (e: Exception) {
+                nomeDecoracao = null
+            }
+        }
+    }
+
+    fun buscarNomeTipoEvento(id: Int) {
+        viewModelScope.launch {
+            try {
+                val nome = TipoEventoRepository().buscarPorId(id).nome
+                nomeTipoEvento = nome
+            } catch (e: Exception) {
+                nomeTipoEvento = null
+            }
+        }
+    }
+
 
     fun buscarDecoracoesPorTipoEvento(tipoEventoId: Int) {
         viewModelScope.launch {
@@ -120,7 +152,9 @@ class Orcamento2ViewModel() : ViewModel() {
         quantidade: Int,
         tipoEventoId: Int,
         sugestao: String?,
-        decoracaoId: Int?
+        decoracaoId: Int?,
+        buffedId: Int,
+        enderecoId: Int
     ) {
         this.dataEvento = data
         this.horario = horario
@@ -128,5 +162,7 @@ class Orcamento2ViewModel() : ViewModel() {
         this.tipoEventoId = tipoEventoId
         this.sugestao = sugestao
         this.decoracaoId = decoracaoId
+        this.buffedId = buffedId
+        this.enderecoId = enderecoId
     }
 }
